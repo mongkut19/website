@@ -1,0 +1,250 @@
+<!DOCTYPE html><html><head>
+        <title>
+Learn : Stencila
+</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-9">
+                <header class="heading">
+                    <span class="small has-text-primary"></span>
+                    <h1 class="title has-line is-1 has-text-primary"></h1>
+                </header>
+                <div class="content">
+                    <h1 id="engine">Engine</h1>
+<p>The <code>Engine</code> is resposible for deciding <em>when</em> (i.e. in which order) and <em>where</em> (i.e. in which execution <code>Context</code>) cells are executed.
+It can be thought of as a meta-<code>Context</code>, that orchestrates other <code>Contexts</code>.</p>
+<p>The <code>Engine</code> takes the code from a cell and converts it into an operation which it then passes
+to the <code>execute</code> method of the <code>Context</code> which executes the operation and returns.</p>
+<h2 id="cells">Cells</h2>
+<p>With Stencila you have full control over the sequence in which your code cells are executed. You can run the code in asynchronous order.
+You can refer to specific outputs and inputs from the given cell in any part of your Stencila document. Depending
+on the programming language which you use in the cell, you may need to capture the output explicitly, in order to be able to
+refer to it. For more details see the documentation for using different programming languages in Stencila.</p>
+<p>If you do not capture the output explicitly, you will not be able to refer to it later on. But the input of the cell
+will still be available.</p>
+<h2 id="pointers">Pointers</h2>
+<p>The engine has an array of <code>Pointers</code> to data values which it knows about. The data values themselves reside inside an execution context but the array needs to</p>
+<p>For example, let&apos;s say that you were using the Star Wars example database, and had a SQL cell with the code,</p>
+<pre><code class="language-sql">low_gravity_planets = SELECT * FROM planets WHERE gravity &lt;= ${max_gravity}
+</code></pre>
+<p>The <code>Engine</code> would send this code the <code>analyse</code> method of the <code>SqliteContext</code> which would return a JSON response like the following:</p>
+<pre><code class="language-json">{
+  &quot;inputs&quot;: [&quot;max_gravity&quot;],
+  &quot;output&quot;: &quot;low_gravity_planets&quot;,
+  &quot;messages&quot;: []
+}
+</code></pre>
+<p>That tells the <code>Engine</code> that this cell requires the variable <code>max_gravity</code> as an input and produces <code>low_gravity_planets</code> as an output. With that information the engine constructs a call operation:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;call&quot;,
+  &quot;func&quot;: {
+    &quot;type&quot;: &quot;source&quot;,
+    &quot;lang&quot;: &quot;sql&quot;,
+    &quot;pars&quot;: [{
+      type: &quot;par&quot;,
+      name: &quot;max_gravity&quot;
+    }],
+    &quot;body&quot;: &quot;low_gravity_planets = SELECT * FROM planets WHERE gravity &lt;= ${max_gravity}&quot;
+  },
+  &quot;args&quot;: [1.5]
+}
+</code></pre>
+<pre><code class="language-json">{
+  &quot;inputs&quot;: [&quot;max_gravity&quot;],
+  &quot;output&quot;: &quot;low_gravity_planets&quot;,
+  &quot;type&quot;: &quot;table&quot;,
+  &quot;messages&quot;: []
+}
+</code></pre>
+<p>The engine then inserts the</p>
+<pre><code class="language-js">&apos;low_gravity_planets&apos; : {
+  type: &apos;table&apos;,
+  context: &apos;http://127.0.0.1:2010&apos;
+  name: &apos;low_gravity_planets&apos;
+}
+</code></pre>
+<p>Later in the document you might want to use an internal language, such as a data flow diagram or Mini to summarise the <code>low_gravity_planets</code> table e.g.</p>
+<pre><code class="language-mini">mean(low_gravity_planets.surface_water)
+</code></pre>
+<p>When compiled, this Mini code produces an operation:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;call&quot;,
+  &quot;func&quot;: {&quot;type&quot;: &quot;get&quot;, &quot;name:&quot;: &quot;mean&quot;},
+  &quot;args&quot;: [
+    {&quot;type&quot;: &quot;get&quot;, &quot;name&quot;: &quot;low_gravity_planets&quot;}
+  ]
+}
+</code></pre>
+<p>The <code>Engine</code> scans this call operation for any global <code>get</code> operations (i.e. a <code>get</code> not within a function), finds the <code>get</code> for <code>low_gravity_planets</code> and thus schedules this call to be run in the <code>SqliteContext</code>.</p>
+
+                </div>
+                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    
+                    <span></span>
+                    
+                    
+                </nav>
+            </div>
+            <div class="column is-2 is-offset-1">
+                <aside class="menu has-background-white">
+    <p class="menu-label">
+        Getting started
+    </p>
+    <ul class="menu-list">
+        <li><a class="is-active" href="/learn/intro.html">Introduction</a></li>
+        <!-- <li><a href="/use/install.html">Installation</a></li> -->
+        <!-- <li><a href="/learn/quick-start.html">Quick start</a></li> -->
+        <!-- <li><a href="/learn/troubleshooting.html">Troubleshooting</a></li> -->
+        <li><a href="/learn/faq.html">FAQ</a></li>
+    </ul>
+    <!-- <p class="menu-label">
+    Computation
+  </p> -->
+    <!-- <ul class="menu-list"> -->
+    <!-- <li><a href="/learn/computation/data.html">Data</a></li> -->
+    <!-- <li><a href="/learn/computation/operations.html">Operations</a></li> -->
+    <!-- <li><a href="/learn/computation/contexts.html">Contexts</a></li> -->
+    <!-- <li><a href="/learn/computation/engine.html">Engine</a></li> -->
+    <!-- <li><a href="/learn/computation/functions.html">Functions</a></li> -->
+    <!-- </ul> -->
+    <!-- <p class="menu-label">
+        Languages
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/languages/mini.html">Mini</a></li>
+        <li><a href="/learn/languages/javascript.html">Javascript</a></li>
+        <li><a href="/learn/languages/python.html">Python</a></li>
+        <li><a href="/learn/languages/r.html">R</a></li>
+        <li><a href="/learn/languages/sql.html">SQL</a></li>
+    </ul> -->
+
+    <p class="menu-label">
+        Integrations
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/integrations/converters.html">Converters</a></li>
+        <li><a href="/learn/integrations/dockter.html">Dockter</a></li>
+    </ul>
+</aside>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/learn/computation/engine.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+    
+
+</body></html>

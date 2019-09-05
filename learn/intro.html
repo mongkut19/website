@@ -1,0 +1,217 @@
+<!DOCTYPE html><html><head>
+        <title>
+Introduction : Stencila
+</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-9">
+                <header class="heading">
+                    <span class="small has-text-primary">Learn</span>
+                    <h1 class="title has-line is-1 has-text-primary">Introduction</h1>
+                </header>
+                <div class="content">
+                    <p>Stencila provides a set of open-source software components enabling reproducible research within the tool of your choice. Stencila allows you to write reproducible
+documents containing interactive source code using the interfaces you are most familiar with. Stencila components can be combined in various ways and plugged
+into existing reproducible infrastructure.</p>
+<h2 id="execution-engine">Execution engine</h2>
+<p><img src="img/engine.png" alt="Stencila Engine" style="display: inline; width: 18%; margin: 0 auto; padding-right: 1em; padding-bottom: 1em; float: left;"></p>
+<p>Stencila execution engine is its heart. The engine enables a spreadsheet-like, reactive programming model. It maintains a graph of the dependency between code cells.
+This means that as you change your code or data, all other parts of your document depending on them get updated as well. Stencila execution engine does not itself
+execute the code embedded in the documents but instead sends it to the execution contexts.</p>
+<h2 style="clear: left;" id="execution-contexts">Execution contexts</h2>
+<p><img src="img/contexts.png" alt="Stencila Contexts" style="display: inline; width: 18%; margin: 0 auto; padding-right: 1em; padding-bottom: 1em; float: left;"></p>
+<p>The execution contexts <em>compile</em> and <em>execute</em> code from the code cells that the execution engine passes on. This means that Stencila can
+be used for practically any programming language as the execution contexts can be developed using Stencila API. Currently we provide execution contexts
+for R, Python, JavaScript, SQL and Mini (Stencila&apos;s own simple language).</p>
+<p>The execution contexts determine the inputs and outputs of cells which enables automatic conversion of data between languages. In other words, you can
+combine multiple languages in one document.</p>
+<h2 id="encoda">Encoda</h2>
+<p><img src="img/convert.png" alt="Stencila Encoda" style="display: inline; width: 18%; margin: 0 auto; padding-right: 1em; float: left;"></p>
+<p style="display: block;">Stencila includes a set of encoders/decoders which allow you to convert between a range of formats commonly used among researchers. Encoda supports lossless conversion of interactive source code sections and (most of the time) formatting.</p>
+<p>You can convert to and from formats used by:</p>
+<ul>
+<li>Excel (<em>xlsx</em>, <em>csv</em>, <em>tsv</em>),</li>
+<li>Jupyter Notebooks (<em>ipynb</em>),</li>
+<li>Markdown (<em>md</em>),</li>
+<li>RMarkdown (<em>Rmd</em>),</li>
+<li>Word (<em>docx</em>),</li>
+<li>LaTeX (<em>tex</em>),</li>
+<li>publishing applications (<em>JATS</em>, <em>xml</em>),</li>
+<li>and more...</li>
+</ul>
+<p>Encoda bridges formats commonly used across the workflow lifecycle, e.g. from Jupyter Notebook to RMarkdown to Word to JATS. It makes the collaboration more
+seamless and less painful.</p>
+
+                </div>
+                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    
+                    <span></span>
+                    
+                    
+                    <a class="pagination-next pagination-next--icon button is-outlined is-primary is-rounded" href="/use/install.html">Installation <span class="icon is-small"><i class="lnr lnr-arrow-right"></i></span></a>
+                    
+                </nav>
+            </div>
+            <div class="column is-2 is-offset-1">
+                <aside class="menu has-background-white">
+    <p class="menu-label">
+        Getting started
+    </p>
+    <ul class="menu-list">
+        <li><a class="is-active" href="/learn/intro.html">Introduction</a></li>
+        <!-- <li><a href="/use/install.html">Installation</a></li> -->
+        <!-- <li><a href="/learn/quick-start.html">Quick start</a></li> -->
+        <!-- <li><a href="/learn/troubleshooting.html">Troubleshooting</a></li> -->
+        <li><a href="/learn/faq.html">FAQ</a></li>
+    </ul>
+    <!-- <p class="menu-label">
+    Computation
+  </p> -->
+    <!-- <ul class="menu-list"> -->
+    <!-- <li><a href="/learn/computation/data.html">Data</a></li> -->
+    <!-- <li><a href="/learn/computation/operations.html">Operations</a></li> -->
+    <!-- <li><a href="/learn/computation/contexts.html">Contexts</a></li> -->
+    <!-- <li><a href="/learn/computation/engine.html">Engine</a></li> -->
+    <!-- <li><a href="/learn/computation/functions.html">Functions</a></li> -->
+    <!-- </ul> -->
+    <!-- <p class="menu-label">
+        Languages
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/languages/mini.html">Mini</a></li>
+        <li><a href="/learn/languages/javascript.html">Javascript</a></li>
+        <li><a href="/learn/languages/python.html">Python</a></li>
+        <li><a href="/learn/languages/r.html">R</a></li>
+        <li><a href="/learn/languages/sql.html">SQL</a></li>
+    </ul> -->
+
+    <p class="menu-label">
+        Integrations
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/integrations/converters.html">Converters</a></li>
+        <li><a href="/learn/integrations/dockter.html">Dockter</a></li>
+    </ul>
+</aside>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/learn/intro.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+    
+
+</body></html>

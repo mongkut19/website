@@ -1,0 +1,212 @@
+<!DOCTYPE html><html><head>
+        <title>Stencila Design Updates and csv,conf,v4 : Stencila</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<main class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-8 posts">
+                <article>
+                    <header class="heading">
+                        <p class="has-text-primary small">Jacqueline Wijaya, 17 May 2019</p>
+                        <h1 class="title has-line has-text-primary is-1">Stencila Design Updates and csv,conf,v4</h1>
+                    </header>
+                    <div class="content post-article-content"><p>Since our team meet in April, we&apos;ve been busy developing our Stencila <a href="https://github.com/stencila/schema">schemas</a> and <a href="https://github.com/stencila/convert">file converters</a> (to be integrated into Google Add-ons for Google Docs and Sheets).</p>
+<p>Based on user research in New Zealand (interviews and concept tests), as well as internal design critiques, we&apos;ve been exploring updates to the Stencila Hub user experience in preparation for integration with our converters and Google Add-ons.</p>
+<p>In this post, I&apos;ll talk through some of the proposed UX changes and reasoning behind those changes.</p>
+<h1 id="stencila-hub-ux-explorations">Stencila Hub UX explorations</h1>
+<h2 id="1.-files-view">1. Files view</h2>
+<p><img src="https://i.imgur.com/Tj8FZka.gif" alt>
+<em>After: Files view.</em></p>
+<h3 id="new-feature%3A-set-a-main-file.">New feature: set a main file.</h3>
+<p>This is a new feature, setting a main file for a Stencila project, which adds a preview of the file in the Overview screen. From user feedback, it was clear that having a visual indicator for the main file in the Files view would be helpful.</p>
+<h3 id="simplify-file-management.">Simplify file management.</h3>
+<p><img src="https://i.imgur.com/vWYUWmu.png" alt>
+<em>Before: Files view (files list).</em></p>
+<p>We&apos;ve made several updates to the Files view, including the layout and content of each listed file. Renaming a file was previously tucked away behind a cog icon, and the delete option was part of a trashcan icon. The new files list layout removes extraneous icons and clutter, and tucks away functions in the &quot;more&quot; (...) icon.</p>
+<p>Additionally, instead of listing file types in text format, an icon is used to save horizontal space.</p>
+<p>Linking and unlinking Github sources was originally done using two separate buttons. To simplify the interface, we tucked away the option to unlink repositories under the &quot;Link&quot; button. Also, instead of requiring the user to specify the folder (within the Stencila project) to add the Github repository contents, the updated UI would use the current working directory (which can be changed through folder navigation).</p>
+<hr>
+<h2 id="2.-sharing-view">2. Sharing view</h2>
+<p><img src="https://i.imgur.com/kRFEivr.gif" alt>
+<em>After: Sharing view.</em></p>
+<h3 id="adjust-spacing%2C-content-order%2C-and-simplify-copy.">Adjust spacing, content order, and simplify copy.</h3>
+<p>The new design removes the extra whitespace and simplifies the copy for making a project public or private.</p>
+<p><img src="https://i.imgur.com/N1ZLpHm.png" alt>
+<em>Before: Sharing view.</em></p>
+<hr>
+<h2 id="3.-files-view%3A-%22new%22-menu-options">3. Files view: &quot;New&quot; menu options</h2>
+<p><img src="https://i.imgur.com/EcV5Wj2.gif" alt>
+<em>After: New file/folder options.</em></p>
+<h3 id="creating-a-new-folder.">Creating a new folder.</h3>
+<p>Previously, the Hub didn&apos;t have a direct way to create folders, so we added a new folder option.</p>
+<h3 id="simplify-file-upload-and-file-creation-flows.">Simplify file upload and file creation flows.</h3>
+<p>The original file uploader was a 3-step process (click &quot;add files&quot; to select files, then &quot;upload files&quot;, then &quot;done&quot;). The updated design allows users to select their files for immediate upload, then click &quot;done&quot;.</p>
+<p><img src="https://i.imgur.com/iyzuV4X.png" alt>
+<em>Before: New file/folder options (file uploader).</em></p>
+<hr>
+<h2 id="4.-files-view%3A-file-conversion">4. Files view: file conversion</h2>
+<p><img src="https://i.imgur.com/uNu29ND.gif" alt>
+<em>After: converting an Rmd file to a Google Doc, and back to an Rmd file.</em></p>
+<h3 id="new-feature%3A-converting-an-rmd-file-to-a-google-doc.">New feature: converting an Rmd file to a Google Doc.</h3>
+<p>Something we&apos;re currently experimenting with is a new feature, to convert Rmd files into Google Docs that can preserve (and easily view) the code used to generate figures and tables based on data files.</p>
+<p>We tested the display of file lineage for converted files, and made adjustments to the Hub designs based on user feedback.</p>
+<hr>
+<h1 id="csv%2Cconf%2Cv4">csv,conf,v4</h1>
+<p><img src="https://i.imgur.com/BNzs7t7.jpg" alt></p>
+<p>Last week I had the privilege of attending <a href="https://csvconf.com/">csv,conf,v4</a> in Portland, Oregon, and had loads of fun meeting librarians, open source project organizers/contributors, and researchers in various fields.</p>
+<p>It was really interesting to be surrounded by people passionate about metadata, open science, statistics, and <a href="https://csvconf.com/speakers/#melissa-santos">box plots</a>. As an outsider to a lot of these topics, I feel inspired to learn more, and contribute to the wider open data and open science community.</p>
+<p><img src="https://i.imgur.com/dnKaOS4.jpg" alt>
+<em>Also, there was a llama, Rojo, at the conference. Sadly, he&apos;s retiring this year. Thank you for your service, Rojo!</em></p>
+<hr>
+<h1 id="next-steps">Next steps</h1>
+<p>In the coming weeks, we&apos;ll be focusing on a visual redesign of the Hub, as well as test and refine our Google Doc and Sheet Add-on designs.</p>
+<p><strong>Let us know if you&apos;re interested in joining our <a href="https://stenci.la/#beta-signup">beta testing program</a>!</strong></p>
+<p><img src="https://i.imgur.com/8V7tZO3.jpg" alt></p>
+</div>
+                </article>
+                
+                <div id="discourse-comments"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/blog/2019-05-17-design-updates/index.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-markdown.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+<script type="text/javascript">
+    DiscourseEmbed = {
+        discourseUrl: 'https://community.stenci.la/',
+        discourseEmbedUrl: window.location.href,
+        { %
+            if front.forum_topic %
+        }
+        topicId: {
+            {
+                front.forum_topic
+            }
+        } { % endif %
+        }
+    };
+    (function() {
+        var d = document.createElement('script');
+        d.type = 'text/javascript';
+        d.async = true;
+        d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+    })();
+</script>
+
+    
+
+</body></html>

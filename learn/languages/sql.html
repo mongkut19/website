@@ -1,0 +1,221 @@
+<!DOCTYPE html><html><head>
+        <title>
+Use SQL with Stencila : Stencila
+</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-9">
+                <header class="heading">
+                    <span class="small has-text-primary">Learn/Languages</span>
+                    <h1 class="title has-line is-1 has-text-primary">Use SQL with Stencila</h1>
+                </header>
+                <div class="content">
+                    <h2 id="installation-(node.js-context)">Installation (Node.js context)</h2>
+<p>The <a href="https://github.com/stencila/node">Stencila Node.js package</a> provides the <code>NodeContext</code> with the <code>SQLiteContext</code> for executing SQL (Structured Query Language) code from within Stencila documents.</p>
+<p>This package comes bundled with Stencila Desktop so it does not need to be installed separately. But, for completeness, and because you may want to use it from another client application, we include these installation instructions here.</p>
+<blockquote class="tip">
+<p> You may need to install <code>npm</code> first. <a href="http://blog.teamtreehouse.com/install-node-js-npm-windows">On Windows, these instructions</a> may be useful.</p>
+</blockquote>
+<p>Open a terminal session (on Windows, go to &quot;Start&quot; and then in &quot;Search for programmes and files&quot; type <code>cmd</code>) and type in:</p>
+<pre><code class="language-bash">npm install stencila/node -g
+</code></pre>
+<blockquote class="tip">
+<p> Although this package is <a href="https://www.npmjs.com/package/stencila-node">available on NPM</a>, we currently recommend installing directly from the <code>master</code> branch on Github as per the above instructions</p>
+</blockquote>
+<p>Then register the package&apos;s manifest so that it can be found by other Stencila packages,</p>
+<pre><code class="language-bash">stencila-node register
+</code></pre>
+<h2 id="code-execution">Code execution</h2>
+<p>Stencila keeps track of the code dependecies between the code cells. It supports reactive programming which means that the code and the respective outputs
+will get updated, when you change a piece of code they depend on. It is a similar principle as behind the behavior of spreadsheet applications.
+You can refer to specific outputs from any code cell in any part of your Stencila document. Stencila does all this using its <a href>execution engine</a>.</p>
+<p>What inputs and outputs of a code cell are vary slightly between programming languages that you use in Stencila.<br>
+For cells written using SQL, the inputs are determined by parsing the <code>FROM</code> clause of the SQL statement.
+For example, the following cell has a single input <code>people</code>, the value of the cell is the result of
+the evaluation of SQL statement and the output is empty (<code>null</code>).</p>
+<pre><code class="language-sql">SELECT * FROM people ORDER BY height DESC
+</code></pre>
+<p>Parsing of inputs from more complicated SQL statements involving joins or sub-queries is currently not supported.</p>
+<p>The the standard syntax of SQL means that the above cell has empty output in Stencila. If you want to capture the value of the evaluation of the cell
+as the cell output, you need to explicitly use the assignment operator before the <code>SELECT</code> statements.
+For example, the following cell has an output <code>brown_hair</code> and an input <code>people</code>.</p>
+<pre><code class="language-sql">brown_hair = SELECT * FROM people WHERE hair_color == &apos;Brown&apos;
+</code></pre>
+<h2 id="data-interchange">Data interchange</h2>
+<p>Stencila provides you with ability to use multiple programming languages to write interactive code within
+one document, working on the same data. In other words, you can manipulate the same data switching between different programming
+languages. This capability is achieved through <code>data interchange</code> feature.</p>
+<p>When you pass data between cells Stencila temporarily converts it into its internal schema representation.
+Currently, only the <code>table</code> data type can be exchanged with SQL. All data values are stored as temporary tables.</p>
+
+                </div>
+                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    
+                    <span></span>
+                    
+                    
+                </nav>
+            </div>
+            <div class="column is-2 is-offset-1">
+                <aside class="menu has-background-white">
+    <p class="menu-label">
+        Getting started
+    </p>
+    <ul class="menu-list">
+        <li><a class="is-active" href="/learn/intro.html">Introduction</a></li>
+        <!-- <li><a href="/use/install.html">Installation</a></li> -->
+        <!-- <li><a href="/learn/quick-start.html">Quick start</a></li> -->
+        <!-- <li><a href="/learn/troubleshooting.html">Troubleshooting</a></li> -->
+        <li><a href="/learn/faq.html">FAQ</a></li>
+    </ul>
+    <!-- <p class="menu-label">
+    Computation
+  </p> -->
+    <!-- <ul class="menu-list"> -->
+    <!-- <li><a href="/learn/computation/data.html">Data</a></li> -->
+    <!-- <li><a href="/learn/computation/operations.html">Operations</a></li> -->
+    <!-- <li><a href="/learn/computation/contexts.html">Contexts</a></li> -->
+    <!-- <li><a href="/learn/computation/engine.html">Engine</a></li> -->
+    <!-- <li><a href="/learn/computation/functions.html">Functions</a></li> -->
+    <!-- </ul> -->
+    <!-- <p class="menu-label">
+        Languages
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/languages/mini.html">Mini</a></li>
+        <li><a href="/learn/languages/javascript.html">Javascript</a></li>
+        <li><a href="/learn/languages/python.html">Python</a></li>
+        <li><a href="/learn/languages/r.html">R</a></li>
+        <li><a href="/learn/languages/sql.html">SQL</a></li>
+    </ul> -->
+
+    <p class="menu-label">
+        Integrations
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/integrations/converters.html">Converters</a></li>
+        <li><a href="/learn/integrations/dockter.html">Dockter</a></li>
+    </ul>
+</aside>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/learn/languages/sql.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+    
+
+</body></html>

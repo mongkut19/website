@@ -1,0 +1,267 @@
+<!DOCTYPE html><html><head>
+        <title>
+Learn : Stencila
+</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-9">
+                <header class="heading">
+                    <span class="small has-text-primary"></span>
+                    <h1 class="title has-line is-1 has-text-primary"></h1>
+                </header>
+                <div class="content">
+                    <h1 id="operations-%3Asparkles%3A">Operations &#x2728;</h1>
+<blockquote>
+<p>&#x2728; Currently, the operations in Stencila are still under development and
+many of the described here features may work only in the development version. We
+welcome any <a href="CONTRIBUTING.md">help with Stencila development</a>!</p>
+</blockquote>
+<p>Stencila performs computations on data using <em>operations</em>.
+Operations are objects encapsulating what should be done to what.</p>
+<p>There are</p>
+<ul>
+<li><code>set</code></li>
+<li><code>get</code></li>
+<li><code>call</code></li>
+<li><code>function</code></li>
+</ul>
+<p>Commands are just values. Homoiconic - code is data</p>
+<h2 id="set">Set</h2>
+<h2 id="get">Get</h2>
+<h2 id="call">Call</h2>
+<h2 id="function">Function</h2>
+<p>A function is an <code>object</code> of type <code>function</code> with properties:</p>
+<ul>
+<li><code>pars</code> : an array of the function&apos;s parameters</li>
+<li><code>body</code> : a value representing the function body</li>
+</ul>
+<p>For example here is a function, which has no parameters and returns the value of <em>pi</em>:</p>
+<pre><code class="language-mini">{
+  type: &apos;function&apos;,
+  body: 3.14159265359
+}
+</code></pre>
+<p>A function call is an <code>object</code> of type <code>call</code> with properties:</p>
+<ul>
+<li><code>name</code> : the name of the object being called</li>
+<li><code>args</code> : an array of values to be used as the functions parameters</li>
+</ul>
+<p>For example, the simple multiplication of two values,</p>
+<pre><code class="language-mini">3 * 4
+</code></pre>
+<p>is equivalent to executing a <code>call</code> of function <code>multiply</code> like this,</p>
+<pre><code class="language-mini">execute {
+  type: &apos;call&apos;,
+  func: {type: &apos;get&apos;, name: &apos;multiply&apos;},
+  args: [ 3, 4 ]
+}
+</code></pre>
+<p>An here&apos;s a slightly more complex example of a function which multiplies a number by it&apos;s self (i.e. squares it):</p>
+<pre><code class="language-mini">{
+  type: &apos;function&apos;,
+  pars: [{
+    name: &apos;x&apos;,
+    type: &apos;number&apos;
+  }],
+  body: [{
+    type: &apos;call&apos;,
+    name: {type: &apos;get&apos;, name: &apos;multiply&apos;},
+    args: [
+      {type: &apos;get&apos;, &apos;x&apos;},
+      {type: &apos;get&apos;, &apos;x&apos;}
+    ]
+  }]
+}
+</code></pre>
+<h2 id="defining-external-functions">Defining external functions</h2>
+<pre><code class="language-mini">{
+  type: &apos;function&apos;,
+  pars: [{
+    name: &apos;x&apos;,
+    type: &apos;number&apos;
+  }],
+  body: [{
+    type: &apos;external&apos;,
+    lang: &apos;r&apos;,
+    code: &apos;x * x&apos;
+  }]
+}
+</code></pre>
+<p>External functions can be in Mini</p>
+<pre><code class="language-mini">
+function (*) r &gt;&gt;&gt;
+  x * x
+&lt;&lt;&lt;
+</code></pre>
+
+                </div>
+                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    
+                    <span></span>
+                    
+                    
+                </nav>
+            </div>
+            <div class="column is-2 is-offset-1">
+                <aside class="menu has-background-white">
+    <p class="menu-label">
+        Getting started
+    </p>
+    <ul class="menu-list">
+        <li><a class="is-active" href="/learn/intro.html">Introduction</a></li>
+        <!-- <li><a href="/use/install.html">Installation</a></li> -->
+        <!-- <li><a href="/learn/quick-start.html">Quick start</a></li> -->
+        <!-- <li><a href="/learn/troubleshooting.html">Troubleshooting</a></li> -->
+        <li><a href="/learn/faq.html">FAQ</a></li>
+    </ul>
+    <!-- <p class="menu-label">
+    Computation
+  </p> -->
+    <!-- <ul class="menu-list"> -->
+    <!-- <li><a href="/learn/computation/data.html">Data</a></li> -->
+    <!-- <li><a href="/learn/computation/operations.html">Operations</a></li> -->
+    <!-- <li><a href="/learn/computation/contexts.html">Contexts</a></li> -->
+    <!-- <li><a href="/learn/computation/engine.html">Engine</a></li> -->
+    <!-- <li><a href="/learn/computation/functions.html">Functions</a></li> -->
+    <!-- </ul> -->
+    <!-- <p class="menu-label">
+        Languages
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/languages/mini.html">Mini</a></li>
+        <li><a href="/learn/languages/javascript.html">Javascript</a></li>
+        <li><a href="/learn/languages/python.html">Python</a></li>
+        <li><a href="/learn/languages/r.html">R</a></li>
+        <li><a href="/learn/languages/sql.html">SQL</a></li>
+    </ul> -->
+
+    <p class="menu-label">
+        Integrations
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/integrations/converters.html">Converters</a></li>
+        <li><a href="/learn/integrations/dockter.html">Dockter</a></li>
+    </ul>
+</aside>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/learn/computation/operations.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+    
+
+</body></html>

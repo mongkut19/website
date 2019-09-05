@@ -1,0 +1,495 @@
+<!DOCTYPE html><html><head>
+        <title>
+Stencila Encoda : Stencila
+</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-9">
+                <header class="heading">
+                    <span class="small has-text-primary"></span>
+                    <h1 class="title has-line is-1 has-text-primary">Stencila Encoda</h1>
+                </header>
+                <div class="content">
+                    <p><img src="/learn/img/convert.png" alt="Stencila Encoda" style="display: inline; width: 12%; margin: 0 auto; padding-right: 1em; padding-bottom: 1em; float: left;"></p>
+<p>Encoda provides a collection of codecs for converting between, and composing together, documents in various formats. The aim is not to achieve perfect lossless conversion between alternative document formats; there are already several tools for that. Instead the focus of Encoda is to use existing tools to encode and compose semantic documents in alternative formats.</p>
+<h2 id="install">Install</h2>
+<p>The easiest way to use Encoda is to install the <a href="https://github.com/stencila/stencila"><code>stencila</code> command line tool</a>. Encoda powers <code>stencila convert</code>, and other commands, in that CLI. However, the version of Encoda in <code>stencila</code>, can lag behind the version in <a href="https://github.com/stencila/encoda">this repo</a>. So if you want the latest functionality, install Encoda as a Node.js package:</p>
+<pre><code class="language-bash">npm install @stencila/encoda --global
+</code></pre>
+<h2 id="use">Use</h2>
+<p>Encoda is intended to be used primarily as a library for other applications. However, it comes with a simple command line script which allows you to use the <code>convert</code> function directly e.g.</p>
+<pre><code class="language-bash">encoda convert notebook.ipynb notebook.docx
+</code></pre>
+<p>Encoda will determine the input and output formats based on the file extensions. You can override these using the <code>--from</code> and <code>--to</code> options. e.g.</p>
+<pre><code class="language-bash">encoda convert notebook.ipynb notebook.xml --to jats
+</code></pre>
+<p>You can decode an entire directory into a <code>Collection</code>. Encoda will traverse the directory, including subdirectories, decoding each file matching your glob pattern. You can then encode the <code>Collection</code> using the <code>dir</code> codec into a tree of HTML files e.g.</p>
+<pre><code class="language-bash">encoda convert myproject myproject-published --to dir --pattern &apos;**/*.{rmd, csv}&apos;
+</code></pre>
+<p>You can also read content from the first argument. In that case, you&apos;ll need to specifying the <code>--from</code> format e.g.</p>
+<pre><code class="language-bash">encoda convert &quot;{type: &apos;Paragraph&apos;, content: [&apos;Hello world!&apos;]}&quot; --from json5 paragraph.md
+</code></pre>
+<p>You can send output to the console by using <code>-</code> as the second argument and specifying the <code>--to</code> format e.g.</p>
+<pre><code class="language-bash">encoda convert paragraph.md - --to yaml
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--from</code></td>
+<td>The format of the input content e.g. <code>--from md</code></td>
+</tr>
+<tr>
+<td><code>--to</code></td>
+<td>The format for the output content e.g. <code>--to html</code></td>
+</tr>
+<tr>
+<td><code>--theme</code></td>
+<td>The theme for the output (only applies to HTML, PDF and RPNG output) e.g. <code>--theme eLife</code></td>
+</tr>
+<tr>
+<td><code>--standalone</code></td>
+<td>Generate a standalone document, not a fragment (default <code>true</code>)</td>
+</tr>
+<tr>
+<td><code>--bundle</code></td>
+<td>Bundle all assets (e.g images, CSS and JS) into the document (default <code>false</code>)</td>
+</tr>
+<tr>
+<td><code>--debug</code></td>
+<td>Print debugging information</td>
+</tr>
+</tbody>
+</table>
+<h2 id="formats">Formats</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Codec</th>
+<th>Approach</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Text</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Plain text</td>
+<td>txt</td>
+<td>None</td>
+<td>&#x3B2;</td>
+</tr>
+<tr>
+<td>Markdown</td>
+<td>md</td>
+<td>Extens</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>LaTex</td>
+<td>latex</td>
+<td>-</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>Microsoft Word</td>
+<td>docx</td>
+<td>rPNG</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>Google Docs</td>
+<td>gdoc</td>
+<td>rPNG</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>Open Document Text</td>
+<td>odt</td>
+<td>rPNG</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>html</td>
+<td>Extens</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>JATS XML</td>
+<td>jats</td>
+<td>Extens</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>JATS XML (Pandoc-based)</td>
+<td>jats-pandoc</td>
+<td>Extens</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>Portable Document Format</td>
+<td>pdf</td>
+<td>rPNG</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td><strong>Notebooks</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Jupyter</td>
+<td>ipynb</td>
+<td>Native</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td>RMarkdown</td>
+<td>xmd</td>
+<td>Native</td>
+<td>&#x3B1;</td>
+</tr>
+<tr>
+<td><strong>Presentations</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Microsoft Powerpoint</td>
+<td>pptx</td>
+<td>rPNG</td>
+<td>&#x2717;</td>
+</tr>
+<tr>
+<td>Demo Magic</td>
+<td>dmagic</td>
+<td>Native</td>
+<td>&#x3B2;</td>
+</tr>
+<tr>
+<td><strong>Spreadsheets</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Microsoft Excel</td>
+<td>xlsx</td>
+<td>Formula</td>
+<td>&#x3B2;</td>
+</tr>
+<tr>
+<td>Google Sheets</td>
+<td>gsheet</td>
+<td>Formula</td>
+<td>&#x2717;</td>
+</tr>
+<tr>
+<td>Open Document Spreadsheet</td>
+<td>ods</td>
+<td>Formula</td>
+<td>&#x3B2;</td>
+</tr>
+<tr>
+<td><strong>Tabular data</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CSV</td>
+<td>csv</td>
+<td>None</td>
+<td>&#x3B2;</td>
+</tr>
+<tr>
+<td>CSVY</td>
+<td>csvy</td>
+<td>None</td>
+<td>&#x2717;</td>
+</tr>
+<tr>
+<td>Tabular Data Package</td>
+<td>tdp</td>
+<td>None</td>
+<td>&#x3B2;</td>
+</tr>
+<tr>
+<td><strong>Collections</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Document Archive</td>
+<td>dar</td>
+<td>Extens</td>
+<td>&#x3C9;</td>
+</tr>
+<tr>
+<td>Filesystem Directory</td>
+<td>dir</td>
+<td>Extens</td>
+<td>&#x3C9;</td>
+</tr>
+<tr>
+<td><strong>Data interchange, other</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>JSON</td>
+<td>json</td>
+<td>Native</td>
+<td>&#x2714;</td>
+</tr>
+<tr>
+<td>JSON5</td>
+<td>json5</td>
+<td>Native</td>
+<td>&#x2714;</td>
+</tr>
+<tr>
+<td>YAML</td>
+<td>yaml</td>
+<td>Native</td>
+<td>&#x2714;</td>
+</tr>
+<tr>
+<td>Pandoc</td>
+<td>pandoc</td>
+<td>Native</td>
+<td>&#x3B2;</td>
+</tr>
+<tr>
+<td>Reproducible PNG</td>
+<td>rpng</td>
+<td>Native</td>
+<td>&#x3B2;</td>
+</tr>
+<tr>
+<td><strong>Transport</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HTTP</td>
+<td>http</td>
+<td></td>
+<td>&#x2714;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key</strong></p>
+<details>
+  <summary><b id="format-approach">Approach</b>...</summary>
+  How executable nodes (e.g. `CodeChunk` and `CodeExpr` nodes) are represented
+<ul>
+<li>Native: the format natively supports executable nodes</li>
+<li>Extens.: executable nodes are supported via extensions to the format</li>
+<li>rPNG: executable nodes are supported via reproducible PNG images</li>
+<li>Formula: executable <code>CodeExpr</code> nodes are represented using formulae</li>
+</ul>
+</details>
+<details>
+  <summary><b id="format-status">Status</b>...</summary>
+<ul>
+<li>&#x2717;: Not yet implemented</li>
+<li>&#x3C9;: Work in progress</li>
+<li>&#x3B1;: Alpha, initial implementation</li>
+<li>&#x3B2;: Beta, ready for user testing</li>
+<li>&#x2714;: Ready for production use</li>
+</ul>
+</details>
+<details>
+  <summary><b id="format-issues">Issues</b>...</summary>
+  Link to open issues and PRs for the format (please check there before submitting a new issue &#x1F64F;)
+</details>
+<p>If you&apos;d like to see a converter for your favorite format, look at the <a href="https://github.com/stencila/encoda/issues">listed issues</a> and comment under the relevant one. If there is no issue regarding the converter you need, <a href="https://github.com/stencila/encoda/issues/new">create one</a>.</p>
+
+                </div>
+                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    
+                    <span></span>
+                    
+                    
+                </nav>
+            </div>
+            <div class="column is-2 is-offset-1">
+                <aside class="menu has-background-white">
+    <p class="menu-label">
+        Getting started
+    </p>
+    <ul class="menu-list">
+        <li><a class="is-active" href="/learn/intro.html">Introduction</a></li>
+        <!-- <li><a href="/use/install.html">Installation</a></li> -->
+        <!-- <li><a href="/learn/quick-start.html">Quick start</a></li> -->
+        <!-- <li><a href="/learn/troubleshooting.html">Troubleshooting</a></li> -->
+        <li><a href="/learn/faq.html">FAQ</a></li>
+    </ul>
+    <!-- <p class="menu-label">
+    Computation
+  </p> -->
+    <!-- <ul class="menu-list"> -->
+    <!-- <li><a href="/learn/computation/data.html">Data</a></li> -->
+    <!-- <li><a href="/learn/computation/operations.html">Operations</a></li> -->
+    <!-- <li><a href="/learn/computation/contexts.html">Contexts</a></li> -->
+    <!-- <li><a href="/learn/computation/engine.html">Engine</a></li> -->
+    <!-- <li><a href="/learn/computation/functions.html">Functions</a></li> -->
+    <!-- </ul> -->
+    <!-- <p class="menu-label">
+        Languages
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/languages/mini.html">Mini</a></li>
+        <li><a href="/learn/languages/javascript.html">Javascript</a></li>
+        <li><a href="/learn/languages/python.html">Python</a></li>
+        <li><a href="/learn/languages/r.html">R</a></li>
+        <li><a href="/learn/languages/sql.html">SQL</a></li>
+    </ul> -->
+
+    <p class="menu-label">
+        Integrations
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/integrations/converters.html">Converters</a></li>
+        <li><a href="/learn/integrations/dockter.html">Dockter</a></li>
+    </ul>
+</aside>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/learn/integrations/converters.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+    
+
+</body></html>

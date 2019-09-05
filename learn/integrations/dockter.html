@@ -1,0 +1,480 @@
+<!DOCTYPE html><html><head>
+        <title>
+Dockter : Stencila
+</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-9">
+                <header class="heading">
+                    <span class="small has-text-primary"></span>
+                    <h1 class="title has-line is-1 has-text-primary">Dockter</h1>
+                </header>
+                <div class="content">
+                    <p>Docker is a useful tool for creating reproducible computing environments. But creating truly reproducible Docker images can be difficult - even if you already know how to write a <code>Dockerfile</code>.</p>
+<p>Dockter makes it easier for researchers to create Docker images for their research projects. Dockter generates a <code>Dockerfile</code> and builds a image, for <em>your</em> project, based on <em>your</em> source code.</p>
+<div class="has-text-left" style="max-width: 30em; ">
+          <span class="icon"><i class="fa fa-flask"></i></span>
+          Dockter is an open source project under active development. 
+          We <span class="icon has-text-danger"><i class="fa fa-heart"></i></span> your <a href="/community/beta-testing.html">feedback</a> but please be patient with bugs and instabilities!
+        </div>
+<ul>
+<li><a href="#features">Features</a>
+<ul>
+<li><a href="#builds-a-docker-image-for-your-project-sources">Builds a Docker image for your project sources</a>
+<ul>
+<li><a href="#r">R</a></li>
+<li><a href="#python">Python</a></li>
+<li><a href="#nodejs">Node.js</a></li>
+</ul>
+</li>
+<li><a href="#automatically-determines-system-requirements">Automatically determines system requirements</a></li>
+<li><a href="#faster-re-installation-of-language-packages">Faster re-installation of language packages</a></li>
+<li><a href="#generates-structured-meta-data-for-your-project">Generates structured meta-data for your project</a></li>
+<li><a href="#easy-to-pick-up-easy-to-throw-away">Easy to pick up, easy to throw away</a></li>
+</ul>
+</li>
+<li><a href="#install">Install</a>
+<ul>
+<li><a href="#cli">CLI</a>
+<ul>
+<li><a href="#windows">Windows</a></li>
+<li><a href="#macos">MacOS</a></li>
+<li><a href="#linux">Linux</a></li>
+</ul>
+</li>
+<li><a href="#package">Package</a></li>
+</ul>
+</li>
+<li><a href="#use">Use</a>
+<ul>
+<li><a href="#compile-a-project">Compile a project</a></li>
+<li><a href="#build-a-docker-image">Build a Docker image</a></li>
+<li><a href="#execute-a-docker-image">Execute a Docker image</a></li>
+</ul>
+</li>
+<li><a href="#contribute">Contribute</a></li>
+<li><a href="#see-also">See also</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ul>
+<h2 id="features">Features</h2>
+<h3 id="builds-a-docker-image-for-your-project-sources">Builds a Docker image for your project sources</h3>
+<p>Dockter scans your project folder and builds a Docker image for it. If the the folder already has a <code>Dockerfile</code>, Dockter will build the image from that. If not, Dockter will scan the source code files in the folder and generate one for you. Dockter currently handles R, Python and Node.js source code. A project can have a mix of these languages.</p>
+<h4 id="r">R</h4>
+<p>If the folder contains a R package <a href="http://r-pkgs.had.co.nz/description.html"><code>DESCRIPTION</code></a> file then Dockter will install the R packages listed under <code>Imports</code> into the image. e.g.</p>
+<pre><code>Package: myrproject
+Version: 1.0.0
+Date: 2017-10-01
+Imports:
+   ggplot2
+</code></pre>
+<p>The <code>Package</code> and <code>Version</code> fields are required in a <code>DESCRIPTION</code> file. The <code>Date</code> field is used to define which CRAN snapshot to use. MRAN daily snapshots began <a href="https://cran.microsoft.com/snapshot/2014-09-08">2014-09-08</a> so the date should be on or after that.</p>
+<p>If the folder does not contain a <code>DESCRIPTION</code> file then Dockter will scan all the R files (files with the extension <code>.R</code> or <code>.Rmd</code>) in the folder for package import or usage statements, like <code>library(package)</code> and <code>package::function()</code>, and create a <code>.DESCRIPTION</code> file for you.</p>
+<h4 id="python">Python</h4>
+<p>If the folder contains a <a href="https://pip.readthedocs.io/en/1.1/requirements.html"><code>requirements.txt</code></a> file, Dockter will copy it into the Docker image and use <code>pip</code> to install the specified packages.</p>
+<p>If the folder does not contain either of those files then Dockter will scan all the folder&apos;s <code>.py</code> files for <code>import</code> statements and create a <code>.requirements.txt</code> file for you.</p>
+<h4 id="node.js">Node.js</h4>
+<p>If the folder contains a <a href="https://docs.npmjs.com/files/package.json"><code>package.json</code></a> file, Dockter will copy it into the Docker image and use <code>npm</code> to install the specified packages.</p>
+<p>If the folder does not contain a <code>package.json</code> file, Dockter will scan all the folder&apos;s <code>.js</code> files for <code>require</code> calls and create a <code>.package.json</code> file for you.</p>
+<h3 id="automatically-determines-system-requirements">Automatically determines system requirements</h3>
+<p>One of the headaches researchers face when hand writing Dockerfiles is figuring out which system dependencies your project needs. Often this involves a lot of trial and error.</p>
+<p>Dockter automatically checks if any of your dependencies (or dependencies of dependencies, or dependencies of...) requires system packages and installs those into the image. For example, let&apos;s say you have a project with an R script that requires the <code>rgdal</code> package for geospatial analyses,</p>
+<pre><code class="language-R">library(rgdal)
+</code></pre>
+<p>When you run <code>dockter compile</code> in this project, Dockter will generate a Dockerfile with the following section which installs R, plus the three system dependencies required <code>gdal-bin</code>, <code>libgdal-dev</code>, and <code>libproj-dev</code>:</p>
+<pre><code class="language-Dockerfile"># This section installs system packages required for your project
+# If you need extra system packages add them here.
+RUN apt-get update \
+ &amp;&amp; DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      gdal-bin \
+      libgdal-dev \
+      libproj-dev \
+      r-base \
+ &amp;&amp; apt-get autoremove -y \
+ &amp;&amp; apt-get clean \
+ &amp;&amp; rm -rf /var/lib/apt/lists/*
+</code></pre>
+<p>For R, Dockter does this by querying the https://sysreqs.r-hub.io/ database. For Python, Dockter includes a mapping of system requirements of packages that users can <a href="https://github.com/stencila/dockter/blob/master/CONTRIBUTING.md#python-system-dependencies">contribute to</a>.</p>
+<p>No more trial and error of build, fail, add dependency, repeat... cycles!</p>
+<h3 id="faster-re-installation-of-language-packages">Faster re-installation of language packages</h3>
+<p>If you have built a Docker image before, you&apos;ll know that it can be frustrating waiting for <em>all</em> your project&apos;s dependencies to reinstall when you simply add or remove one of them.</p>
+<p>The reason this happens is that, due to Docker&apos;s layered filesystem, when you update a requirements file, Docker throws away all the subsequent layers - including the one where you previously installed your dependencies. That means that all those packages need to get reinstalled.</p>
+<p>Dockter takes a different approach. It leaves the installation of language packages to the language package managers: Python&apos;s <a href="https://pypi.org/project/pip/"><code>pip</code></a> , Node.js&apos;s <code>npm</code>, and R&apos;s <code>install.packages</code>. These package managers are good at the job they were designed for - to check which packages need to be updated and to only update them. The result is much faster rebuilds, especially for R packages, which often involve compilation.</p>
+<p>Dockter does this by looking for a special <code># dockter</code> comment in a <code>Dockerfile</code>. Instead of throwing away layers, it executes all instructions after this comment in the same layer - thus reusing packages that were previously installed.</p>
+<p>Here&apos;s a simple motivating <a href="fixtures/tests/py-pandas">example</a>. It&apos;s a Python project with a <code>requirements.txt</code> file which specifies that the project depends upon <code>pandas</code> which, to ensure reproducibility, is pinned to version <code>0.23.0</code>,</p>
+<pre><code>pandas==0.23.0
+</code></pre>
+<p>The project also has a <code>Dockerfile</code> which specifies which Python version we want to use, copies <code>requirements.txt</code> into the image, and uses <code>pip</code> to install the packages:</p>
+<pre><code class="language-Dockerfile">FROM python:3.7.0
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+</code></pre>
+<p>You can build a Docker image for that project using Docker,</p>
+<pre><code class="language-bash">docker build .
+</code></pre>
+<p>Docker will download the base Python image (if you don&apos;t yet have it), download five packages (<code>pandas</code> and it&apos;s four dependencies) and install them. This took over 9 minutes when we ran it.</p>
+<p>Now, let&apos;s say that we want to get the latest version of <code>pandas</code> and increment the version in the <code>requirements.txt</code> file,</p>
+<pre><code>pandas==0.23.1
+</code></pre>
+<p>When we do <code>docker build .</code> again to update the image, Docker notices that the <code>requirements.txt</code> file has changed and so throws away that layer and all subsequent ones. This means that it will download and install <em>all</em> the necessary packages again, including the ones that we previously installed. For a more contrived illustration of this, simply add a space to one of the lines in the <code>requirements.txt</code> file and notice how the package install gets repeated all over again.</p>
+<p>Now, let&apos;s add a special <code># dockter</code> comment to the Dockerfile before the <code>COPY</code> directive,</p>
+<pre><code class="language-Dockerfile">FROM python:3.7.0
+
+# dockter
+
+COPY requirements.xt .
+RUN pip install -r requirements.txt
+</code></pre>
+<p>The comment is ignored by Docker but tells <code>dockter</code> to run all subsequent instructions in a single filesystem layer,</p>
+<pre><code class="language-bash">dockter build .
+</code></pre>
+<p>Now, if you change the <code>requirements.txt</code> file, instead of reinstalling everything again, <code>pip</code> will only reinstall what it needs to - the updated <code>pandas</code> version. The output looks like:</p>
+<pre><code>Step 1/1 : FROM python:3.7.0
+ ---&gt; a9d071760c82
+Successfully built a9d071760c82
+Successfully tagged dockter-5058f1af8388633f609cadb75a75dc9d:system
+Dockter 1/2 : COPY requirements.txt requirements.txt
+Dockter 2/2 : RUN pip install -r requirements.txt
+Collecting pandas==0.23.1 (from -r requirements.txt (line 1))
+
+  &lt;snip&gt;
+  
+Successfully built pandas
+Installing collected packages: pandas
+  Found existing installation: pandas 0.23.0
+    Uninstalling pandas-0.23.0:
+      Successfully uninstalled pandas-0.23.0
+Successfully installed pandas-0.23.1
+
+</code></pre>
+<h3 id="generates-structured-meta-data-for-your-project">Generates structured meta-data for your project</h3>
+<p>Dockter uses <a href="https://json-ld.org/">JSON-LD</a> as it&apos;s internal data structure. When it parses your project&apos;s source code it generates a JSON-LD tree using a vocabularies from <a href="https://schema.org">schema.org</a> and <a href="https://codemeta.github.io/index.html">CodeMeta</a>.</p>
+<p>For example, It will parse a <code>Dockerfile</code> into a schema.org <a href="https://schema.org/SoftwareSourceCode"><code>SoftwareSourceCode</code></a> node extracting meta-data about the Dockerfile.</p>
+<p>Dockter also fetches meta data on your project&apos;s dependencies, which could be used to generate a complete software citation for your project.</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;myproject&quot;,
+  &quot;datePublished&quot;: &quot;2017-10-19&quot;,
+  &quot;description&quot;: &quot;Regression analysis for my data&quot;,
+  &quot;softwareRequirements&quot;: [
+    {
+      &quot;description&quot;: &quot;\nFunctions to Accompany J. Fox and S. Weisberg,\nAn R Companion to Applied Regression, Third Edition, Sage, in press.&quot;,
+      &quot;name&quot;: &quot;car&quot;,
+      &quot;urls&quot;: [
+        &quot;https://r-forge.r-project.org/projects/car/&quot;,
+        &quot;https://CRAN.R-project.org/package=car&quot;,
+        &quot;http://socserv.socsci.mcmaster.ca/jfox/Books/Companion/index.html&quot;
+      ],
+      &quot;authors&quot;: [
+        {
+          &quot;name&quot;: &quot;John Fox&quot;,
+          &quot;familyNames&quot;: [
+            &quot;Fox&quot;
+          ],
+          &quot;givenNames&quot;: [
+            &quot;John&quot;
+          ]
+        },
+</code></pre>
+<h3 id="easy-to-pick-up%2C-easy-to-throw-away">Easy to pick up, easy to throw away</h3>
+<p>Dockter is designed to make it easier to get started creating Docker images for your project. But it&apos;s also designed not to get in your way or restrict you from using bare Docker. You can easily, and individually, override any of the steps that Dockter takes to build an image.</p>
+<ul>
+<li>
+<p><em>Code analysis</em>: To stop Dockter doing code analysis and take over specifying your project&apos;s package dependencies, just remove the leading &apos;.&apos; from the <code>.DESCRIPTION</code>, <code>.requirements.txt</code> or <code>.package.json</code> file that Dockter generates.</p>
+</li>
+<li>
+<p><em>Dockerfile generation</em>: Dockter aims to generate readable Dockerfiles that conform to best practices. They include comments on what each section does and are a good way to start learning how to write your own Dockerfiles. To stop Dockter generating a <code>.Dockerfile</code>, and start editing it yourself, just rename it to <code>Dockerfile</code>.</p>
+</li>
+<li>
+<p><em>Image building</em>: Dockter manages incremental builds using a special comment in the <code>Dockerfile</code>, so you can stop using Dockter altogether and build the same image using Docker (it will just take longer if you change you project dependencies).</p>
+</li>
+</ul>
+<h2 id="install">Install</h2>
+<p>Dockter is available as pre-compiled, standalone command line tool (CLI), or as a Node.js package. In both cases, if you want to use Dockter to build Docker images, you will need to <a href="https://docs.docker.com/install/">install Docker</a> if you don&apos;t already have it.</p>
+<h3 id="cli">CLI</h3>
+<h4 id="windows">Windows</h4>
+<p>To install the latest release of the <code>dockter</code> command line tool, download <code>dockter-win-x64.zip</code> for the <a href="https://github.com/stencila/dockter/releases/">latest release</a> and place it somewhere on your <code>PATH</code>.</p>
+<h4 id="macos">MacOS</h4>
+<p>To install the latest release of the <code>dockter</code> command line tool to <code>/usr/local/bin</code> just,</p>
+<pre><code class="language-bash">curl -L https://unpkg.com/@stencila/dockter/install-latest-macos.sh | bash
+</code></pre>
+<p>Or, if you&apos;d prefer to do things manually, download <code>dockter-macos-x64.tar.gz</code> for the <a href="https://github.com/stencila/dockter/releases/">latest release</a> and then,</p>
+<pre><code class="language-bash">tar xvf dockter-macos-x64.tar.gz
+sudo mv -f dockter /usr/local/bin
+</code></pre>
+<h4 id="linux">Linux</h4>
+<p>To install the latest release of the <code>dockter</code> command line tool to <code>~/.local/bin/</code> just,</p>
+<pre><code class="language-bash">curl -L https://unpkg.com/@stencila/dockter/install-latest-linux.sh | bash
+</code></pre>
+<p>Or, if you&apos;d prefer to do things manually, or place Dockter elewhere, download <code>dockter-linux-x64.tar.gz</code> for the <a href="https://github.com/stencila/dockter/releases/">latest release</a> and then,</p>
+<pre><code class="language-bash">tar xvf dockter-linux-x64.tar.gz
+mv -f dockter ~/.local/bin/ # or wherever you like
+</code></pre>
+<h3 id="package">Package</h3>
+<p>If you want to integrate Dockter into another application or package, it is also available as a Node.js package :</p>
+<pre><code class="language-bash">npm install @stencila/dockter
+</code></pre>
+<h2 id="use">Use</h2>
+<p>The command line tool has three primary commands <code>compile</code>, <code>build</code> and <code>execute</code>. To get an overview of the commands available use the <code>--help</code> option i.e.</p>
+<pre><code class="language-bash">dockter --help
+</code></pre>
+<p>To get more detailed help on a particular command, also include the command name e.g</p>
+<pre><code class="language-bash">dockter compile --help
+</code></pre>
+<h3 id="compile-a-project">Compile a project</h3>
+<p>The <code>compile</code> command compiles a project folder into a specification of a software environment. It scans the folder for source code and package requirement files, parses them, and creates an <code>.environ.jsonld</code> file. This file contains the information needed to build a Docker image for your project.</p>
+<p>For example, let&apos;s say your project folder has a single R file, <code>main.R</code> which uses the R package <code>lubridate</code> to print out the current time:</p>
+<pre><code class="language-R">lubridate::now()
+</code></pre>
+<p>Let&apos;s compile that project and inspect the compiled software environment. Change into the project directory and run the <code>compile</code> command.</p>
+<pre><code class="language-bash">dockter compile
+</code></pre>
+<p>You should find three new files in the folder created by Dockter:</p>
+<ul>
+<li>
+<p><code>.DESCRIPTION</code>: A R package description file containing a list of the R packages required and other meta-data</p>
+</li>
+<li>
+<p><code>.envrion.jsonld</code>: A JSON-LD document containing structure meta-data on your project and all of its dependencies</p>
+</li>
+<li>
+<p><code>.Dockerfile</code>: A <code>Dockerfile</code> generated from <code>.environ.jsonld</code></p>
+</li>
+</ul>
+<p>To stop Dockter generating any of these files and start editing it yourself, remove the leading <code>.</code> from the name of the file you want to take over creating.</p>
+<h3 id="build-a-docker-image">Build a Docker image</h3>
+<p>Usually, you&apos;ll compile and build a Docker image for your project in one step using the <code>build</code> command. This command runs the <code>compile</code> command and builds a Docker image from the generated <code>.Dockerfile</code> (or  handwritten <code>Dockerfile</code>):</p>
+<pre><code class="language-bash">dockter build
+</code></pre>
+<p>After the image has finished building you should have a new docker image on your machine, called <code>rdate</code>:</p>
+<pre><code class="language-bash">&gt; docker images
+REPOSITORY        TAG                 IMAGE ID            CREATED              SIZE
+rdate             latest              545aa877bd8d        About a minute ago   766MB
+</code></pre>
+<p>If you want to build your image with bare Docker rename <code>.Dockerfile</code> to <code>Dockerfile</code> and run <code>docker build .</code> instead. This might be a good approach when you have finished the exploratory phase of your project (i.e. there is litte or no churn in your package dependencies) and want to create a more final image.</p>
+<h3 id="execute-a-docker-image">Execute a Docker image</h3>
+<p>You can use Docker to run the created image. Or use Dockter&apos;s <code>execute</code> command to compile, build and run your image in one:</p>
+<pre><code class="language-bash">&gt; dockter execute
+2018-10-23 00:58:39
+</code></pre>
+<p>Dockter&apos;s <code>execute</code> also mounts the folder into the container and sets the users and group ids. This allows you to read and write files into the project folder from within the container. It&apos;s equivaluent to running Docker with these arguments:</p>
+<pre><code class="language-bash">docker run --rm --volume $(pwd):/work --workdir=/work --user=$(id -u):$(id -g) &lt;image&gt;
+</code></pre>
+<h2 id="contribute">Contribute</h2>
+<p>We welcome all contributions: ideas, bug reports, documentation, code. See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for more details.</p>
+<h2 id="see-also">See also</h2>
+<p>There are several other projects that create Docker images from source code and/or requirements files including:</p>
+<ul>
+<li><a href="https://github.com/alibaba/derrick"><code>alibaba/derrick</code></a></li>
+<li><a href="https://github.com/jupyter/repo2docker"><code>jupyter/repo2docker</code></a></li>
+<li><a href="https://github.com/Gueils/whales"><code>Gueils/whales</code></a></li>
+<li><a href="https://github.com/o2r-project/containerit"><code>o2r-project/containerit</code></a></li>
+<li><a href="https://github.com/openshift/source-to-image"><code>openshift/source-to-image</code></a></li>
+<li><a href="https://github.com/ViDA-NYU/reprozip%5D"><code>ViDA-NYU/reprozip</code></a></li>
+</ul>
+<p>Dockter is similar to <code>repo2docker</code>, <code>containerit</code>, and <code>reprozip</code> in that it is aimed at researchers doing data analysis (and supports R) whereas most other tools are aimed at software developers (and don&apos;t support R). Dockter differs to these projects principally in that it:</p>
+<ul>
+<li>
+<p>performs static code analysis for multiple languages to determine package requirements.</p>
+</li>
+<li>
+<p>uses package databases to determine package system dependencies and generate linked meta-data (<code>containerit</code> does this for R).</p>
+</li>
+<li>
+<p>quicker installation of language package dependencies (which can be useful during research projects where dependencies often change).</p>
+</li>
+<li>
+<p>by default, but optionally, installs Stencila packages so that Stencila client interfaces can execute code in the container.</p>
+</li>
+</ul>
+<p>The approach taken in Dockter to building Docker images is a mix of Dockerfile generation, as in <code>repo2docker</code>, and code injection and incremental builds as in <code>source-to-image</code>.</p>
+<p><code>reprozip</code> and its extension <code>reprounzip-docker</code> may be a better choice if you want to share your existing local environment as a Docker image with someone else.</p>
+<p><code>containerit</code> might suit you better if you only need support for R and don&apos;t want managed packaged installation.</p>
+<p><code>repo2docker</code> is probably a better choice if you want to run Jupyter notebooks or RStudio in your container and don&apos;t need source code scanning to detect your requirements.</p>
+<p><code>source-to-image</code> might suit you better if your focus is on web development (e.g. Ruby, Node.js) and want a more stable, feature complete implementation of incremental builds.</p>
+<p>If you don&apos;t want to build a Docker image and just want a tool that helps determining the package dependencies of your source code check out:</p>
+<ul>
+<li>Node.js: <a href="https://github.com/browserify/detective"><code>detective</code></a></li>
+<li>Python: <a href="https://docs.python.org/3.7/library/modulefinder.html"><code>modulefinder</code></a></li>
+<li>R: <a href="https://github.com/hadley/requirements"><code>requirements</code></a></li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<p><em>Why go to the effort of generating a JSON-LD intermediate representation instead of writing a Dockerfile directly?</em></p>
+<p>Having an intermediate representation of the software environment allows this data to be used for other purposes (e.g. software citations, publishing, archiving). It also allows us to reuse much of this code for build targets other than Docker (e.g. Nix) and sources other than code files (e.g. a GUI).</p>
+<p><em>Why is Dockter a Node.js package?</em></p>
+<p>We&apos;ve implemented this as a Node.js package for easier integration into Stencila&apos;s Node.js based desktop and cloud deployments. We already had familiarity with using <code>dockerode</code> the Node.js package that we use to talk to Docker for incremental builds and container execution.</p>
+<p><em>Why is Dockter implemented in Typescript?</em></p>
+<p>Typescript&apos;s type-checking and type-annotations can reduce the number of runtime errors and improves developer experience. For this partiular project, we wanted to use the Typescript type defintions for <code>SoftwarePackage</code>, <code>CreativeWork</code>, <code>Person</code> etc that are defined in <a href="https://github.com/stencila/schema">stencila/schema</a>.</p>
+<p><em>Why didn&apos;t you use, and contribute to, an existing project rather than creating a new tool</em></p>
+<p>When existing projects don&apos;t take the approach or provide the features you want, it&apos;s often a difficult decision to make whether to invest the time to understand and refactor an existing code base or to start fresh. In this case, we chose to start fresh for the reasons and differences outlined above. We felt it would take too much refactoring of existing projects to shoehorn in the approach we wanted to take and we wanted to be able to resuse much of this code in another sister project targetting Nix environments.</p>
+
+                </div>
+                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    
+                    <span></span>
+                    
+                    
+                </nav>
+            </div>
+            <div class="column is-2 is-offset-1">
+                <aside class="menu has-background-white">
+    <p class="menu-label">
+        Getting started
+    </p>
+    <ul class="menu-list">
+        <li><a class="is-active" href="/learn/intro.html">Introduction</a></li>
+        <!-- <li><a href="/use/install.html">Installation</a></li> -->
+        <!-- <li><a href="/learn/quick-start.html">Quick start</a></li> -->
+        <!-- <li><a href="/learn/troubleshooting.html">Troubleshooting</a></li> -->
+        <li><a href="/learn/faq.html">FAQ</a></li>
+    </ul>
+    <!-- <p class="menu-label">
+    Computation
+  </p> -->
+    <!-- <ul class="menu-list"> -->
+    <!-- <li><a href="/learn/computation/data.html">Data</a></li> -->
+    <!-- <li><a href="/learn/computation/operations.html">Operations</a></li> -->
+    <!-- <li><a href="/learn/computation/contexts.html">Contexts</a></li> -->
+    <!-- <li><a href="/learn/computation/engine.html">Engine</a></li> -->
+    <!-- <li><a href="/learn/computation/functions.html">Functions</a></li> -->
+    <!-- </ul> -->
+    <!-- <p class="menu-label">
+        Languages
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/languages/mini.html">Mini</a></li>
+        <li><a href="/learn/languages/javascript.html">Javascript</a></li>
+        <li><a href="/learn/languages/python.html">Python</a></li>
+        <li><a href="/learn/languages/r.html">R</a></li>
+        <li><a href="/learn/languages/sql.html">SQL</a></li>
+    </ul> -->
+
+    <p class="menu-label">
+        Integrations
+    </p>
+    <ul class="menu-list">
+        <li><a href="/learn/integrations/converters.html">Converters</a></li>
+        <li><a href="/learn/integrations/dockter.html">Dockter</a></li>
+    </ul>
+</aside>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/learn/integrations/dockter.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+    
+
+</body></html>

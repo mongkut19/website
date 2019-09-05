@@ -1,0 +1,265 @@
+<!DOCTYPE html><html><head>
+        <title>Using JSON Schema for developing and validating executable documents : Stencila</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<main class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-8 posts">
+                <article>
+                    <header class="heading">
+                        <p class="has-text-primary small">Nokome Bentley, 18 February 2019</p>
+                        <h1 class="title has-line has-text-primary is-1">Using JSON Schema for developing and validating executable documents</h1>
+                    </header>
+                    <div class="content post-article-content"><p>At Stencila, we&apos;re aiming to provide a framework for the next generation of executable documents. We envisage interactive spreadsheets, notebooks and articles that are highly structured (i.e. made up of a variety of fine grained document nodes) and strongly typed (i.e. only certain types of document nodes are allowed in certain places).</p>
+<p>To achieve this we are representing executable documents as a tree of JSON data and using <a href="https://json-schema.org/">JSON Schema</a> to specify and validate how that tree can be structured. This post briefly introduces some of the development approaches we&apos;ve been finding useful in developing schemas for Stencila.</p>
+<h2 id="defining-a-schema">Defining a schema</h2>
+<p>We plan to eventually define JSON Schemas for all the nodes that make up an executable document. However, currently we&apos;re focussing on the the &quot;executable&quot; nodes - those parts of the document that perform computation. This includes types like:</p>
+<ul>
+<li><code>Package</code> a software package e.g. the R package <code>tidyverse</code> or the Python package <code>matplotlib</code></li>
+<li><code>Environment</code> a computational environment made up of <code>Packages</code></li>
+<li><code>Session</code> a run time process such as an R or Python session</li>
+<li><code>Function</code> a function in some language with parameters, return type etc</li>
+<li><code>Expression</code> a simple expression in some language</li>
+<li><code>Chunk</code> a set of statements in some language</li>
+</ul>
+<p>Although these are not the types of nodes you&apos;d normally expect to see in a static document produced by, say, Word, they are necessary for a <strong>reproducible</strong>, executable document.</p>
+<p>In this post, I&apos;ll be using, as an example, the schema that we are in the process of defining for <code>Environment</code> nodes. An executable document will probably only have one <code>Environment</code> node &#x2013; to define which packages, and versions of those packages, are necessary to execute the document.</p>
+<p>A JSON Schema is itself just a JSON document. The various properties of the JSON describe the schema providing both documentation and defining validation constraints. Below is the current draft of the <code>Environment</code> schema. This post is mostly about how we develop and use these schema so we won&apos;t go into more details here about it, but check out the json-schema.org site if you want to understand how to interpret this schema snippet.</p>
+<pre><code class="language-json">{
+    &quot;$id&quot;: &quot;https://stencila.github.com/schema/01-draft/Environment.schema.json&quot;,
+    &quot;$schema&quot;: &quot;https://json-schema.org/draft-07/schema&quot;,
+    &quot;title&quot;: &quot;Environment&quot;,
+    &quot;description&quot;: &quot;A computational environment.&quot;,
+    &quot;@id&quot;: &quot;stencila:Environment&quot;,
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+        &quot;type&quot;: { 
+            &quot;description&quot;: &quot;The type of document&quot;,
+            &quot;const&quot;: &quot;Environment&quot;
+        },        
+        &quot;name&quot;: { 
+            &quot;description&quot;: &quot;The name of the environment.&quot;,
+            &quot;@id&quot;: &quot;schema:name&quot;,
+            &quot;allOf&quot;: [{ &quot;$ref&quot;: &quot;name.schema.json&quot; }]
+        },
+        &quot;description&quot;: { 
+            &quot;description&quot;: &quot;Description of the environment.&quot;,
+            &quot;@id&quot;: &quot;schema:description&quot;,
+            &quot;allOf&quot;: [{ &quot;$ref&quot;: &quot;#/definitions/description&quot; }]
+        },
+        &quot;extends&quot;: {
+            &quot;description&quot;: &quot;Other environments that this environment extends by adding or removing packages.&quot;,
+            &quot;@id&quot;: &quot;stencila:extends&quot;,
+            &quot;allOf&quot;: [{ &quot;$ref&quot;: &quot;#/definitions/environments&quot; }]
+        },
+        &quot;adds&quot;: {
+            &quot;description&quot;: &quot;The packages that this environment adds to the base environments listed under `extends` (if any).&quot;,
+            &quot;@id&quot;: &quot;stencila:adds&quot;,
+            &quot;allOf&quot;: [{ &quot;$ref&quot;: &quot;#/definitions/packages&quot; }]
+        },
+</code></pre>
+<h2 id="validating-a-schema">Validating a schema</h2>
+<p>Having written, or made changes to, a schema definition, how do we check that it&apos;s correct? The answer is to use the schema&apos;s own <code>$schema</code> property:</p>
+<pre><code class="language-json">&quot;$schema&quot;: &quot;https://json-schema.org/draft-07/schema&quot;
+</code></pre>
+<p>The <code>$schema</code> property gives the URL of the schema against which a JSON document should be validated. For a JSON-Schema document, its <code>$schema</code> is a &quot;meta-schema&quot; i.e. the schema for schemas.</p>
+<p>Your favourite code editor may already be smart enough to detect the <code>$schema</code> property and warn you of any issues. Here, my editor, VS Code, is warning me that I&apos;ve put a number instead of a string for my schema&apos;s title:</p>
+<p><img src="schema-validation.png" alt></p>
+<p>In addition, the <a href="https://github.com/stencila/schema"><code>stencila/schema</code></a> repository has got a simple script called <a href="https://github.com/stencila/schema/blob/master/validate-schema.js"><code>validate-schema.js</code></a> which uses the <a href="https://github.com/epoberezkin/ajv"><code>ajv</code></a> package to check that our type schemas are valid and give an error message if they are not:</p>
+<pre><code class="language-bash">&gt; node validate-schema.js
+schema/Environment.schema.json: .title should be string. Details: {&quot;keyword&quot;:&quot;type&quot;,&quot;dataPath&quot;:&quot;.title&quot;,&quot;schemaPath&quot;:&quot;#/properties/title/type&quot;,&quot;params&quot;:{&quot;type&quot;:&quot;string&quot;},&quot;message&quot;:&quot;should be string&quot;}
+</code></pre>
+<p>This script is run as part of the continuous integration job for the repository to continuously check that the schema definitions are correct.</p>
+<h2 id="using-a-schema-to-assist-with-authoring-json">Using a schema to assist with authoring JSON</h2>
+<p>One of the advantages of defining a JSON Schema is the growing ecosystem of developer tools that can make use of them. As we saw above, some editors like VS Code have built in support for JSON Schema to provide you with warnings if your JSON document does not validate against its <code>$schema</code>.</p>
+<p>Some editors take this further by providing autocompletion based on a document&apos;s <code>$schema</code> property. This can help speed up writing valid JSON by essentially importing the schema&apos;s documentation into the editor. Here, you can see that VS Code is telling me which properties I might want to add to my <code>Environment</code>&apos;s definition:</p>
+<p><img src="json-intellisense.gif" alt></p>
+<h2 id="yaml-as-a-more-humane-format-for-structured-data">YAML as a more humane format for structured data</h2>
+<p>JSON is quite a verbose format for creating structured data. An alternative is <a href="https://en.wikipedia.org/wiki/YAML">YAML</a>. YAML is a superset of JSON, meaning that any JSON document is also valid YAML. Because of its better readability, YAML is an increasingly popular format for configuration files.</p>
+<p>There are developer tools available, which take advantage of the relationship between JSON and YAML, to allow you to use a JSON Schema to validate a YAML document. For example, in your VS Code <code>settings.json</code> file you can tell the <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml"><code>vscode-yaml</code></a> extension how to associate a schema with file name extensions:</p>
+<pre><code class="language-json">    &quot;yaml.schemas&quot;: {
+        &quot;./schema/Environment.schema.json&quot;: &quot;*.environ.yaml&quot;
+    }
+</code></pre>
+<p>That brings the same schema-based autocompletion and warnings to YAML simply by using the <code>.environ.yaml</code> file name extension:</p>
+<p><img src="yaml-autocomplete.gif" alt></p>
+<p>We have been finding that writing example documents in this way has been useful for checking that the schemas we are defining are useful for both machines and humans!</p>
+<h2 id="generating-typescript-interfaces-from-json-schema">Generating Typescript interfaces from JSON Schema</h2>
+<p>Some of our recent projects are written using Typescript, a superset of JavaScript which adds optional static typing. For example,<a href="https://github.com/stencila/dockter">Dockter</a> and <a href="https://github.com/stencila/nixster">Nixster</a> build a Docker image, or a Nix environment, respectively, using a definition of a computational <code>Environment</code> like the examples above. We want to ensure that the internal model of an environment in these projects is the same as the that defined in <code>Environment.schema.json</code>.</p>
+<p>For this purpose, the schema repository has a script <a href="https://github.com/stencila/schema/blob/master/schema-to-typescript.js"><code>schema-to-typescript.js</code></a> which translates JSON Schema into Typescript using the <a href="https://github.com/bcherny/json-schema-to-typescript"><code>json-schema-to-typescript</code></a> package.</p>
+<pre><code class="language-bash">&gt; node schema-to-typescript.js
+</code></pre>
+<p>This generates a Typescript declaration file (<code>*.d.ts</code>) for each type&apos;s schema. Typescript declaration files do not contain any Javascript, they simply declare the &apos;shape&apos; (i.e structure) of types. The generated file looks something like this, exploring an <code>Environment</code> interface complete with type constraints and code comments matching those in our JSON Schema:</p>
+<pre><code class="language-typescript">/**
+ * A computational environment.
+ */
+export interface Environment {
+  /**
+   * The name of the environment.
+   */
+  name: Name;
+  /**
+   * Description of the environment.
+   */
+  description?: Description;
+...
+</code></pre>
+<p>We can then use that definition from within our Typescript project to get all the benefits to developers of documentation, autocompletion and warnings within code editors:</p>
+<p><img src="typescript-validation.png" alt></p>
+<h2 id="next-steps">Next steps</h2>
+<p>JSON Schemas are a powerful approach gaining increasing adoption. We are looking forward to using them to build tools for rich, composable and reproducible, executable documents.</p>
+<p>We&apos;ll be continuing to define and refine our schema definitions. Get involved by the joining the discussion at our <a href="https://github.com/stencila/schema">Github repo</a>, in our <a href="https://gitter.im/stencila/stencila">Gitter chat</a>, or in our community <a href="https://community.stenci.la">forum</a>.</p>
+<p>For more on JSON Schema and using it with Typescript check out:</p>
+<ul>
+<li><a href="https://json-schema.org/understanding-json-schema/">Understanding JSON Schema</a></li>
+<li><a href="https://spin.atomicobject.com/2018/03/26/typescript-data-validation/">Statically Typed Data Validation with JSON Schema and TypeScript</a>  by Drew Colthorp</li>
+<li><a href="https://blog.enriched.io/using-json-schema/">Using Json-Schema in TypeScript</a> by Rich Adams</li>
+</ul>
+</div>
+                </article>
+                
+                <div id="discourse-comments"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/blog/2019-02-19-json-schema/index.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-markdown.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+<script type="text/javascript">
+    DiscourseEmbed = {
+        discourseUrl: 'https://community.stenci.la/',
+        discourseEmbedUrl: window.location.href,
+        { %
+            if front.forum_topic %
+        }
+        topicId: {
+            {
+                front.forum_topic
+            }
+        } { % endif %
+        }
+    };
+    (function() {
+        var d = document.createElement('script');
+        d.type = 'text/javascript';
+        d.async = true;
+        d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+    })();
+</script>
+
+    
+
+</body></html>

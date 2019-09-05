@@ -1,0 +1,321 @@
+<!DOCTYPE html><html><head>
+        <title>From blobs to trees: semantic code analysis : Stencila</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<main class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-8 posts">
+                <article>
+                    <header class="heading">
+                        <p class="has-text-primary small">Nokome Bentley, 19 June 2019</p>
+                        <h1 class="title has-line has-text-primary is-1">From blobs to trees: semantic code analysis</h1>
+                    </header>
+                    <div class="content post-article-content"><h2 id="what-and-why%3F">What and why?</h2>
+<p>Semantic analysis of code aims to determine its meaning i.e. what the code <em>does</em>, as opposed to what its <em>shape</em> is (which is syntactic analysis). Within Stencila we do semantic analysis of code for two main purposes (1) code cell dependency analysis, and (2) package requirements analysis.</p>
+<p>We do code cell dependency analysis to enable a reactive programming model. This model, familiar to any user of a spreadsheet, requires a graph of the dependency between code cells. Currently, we do this analysis within execution contexts by analysing each code cell to see which variables are inputs and which variables are outputs. For example, <a href="https://github.com/stencila/r/blob/0ed939a7926ae1c3bf7f672cb2632396d9bbbe06/R/r-context.R#L40-L49">in the <code>stencila/r</code> package</a>  by piggy backing on the <a href="https://cran.rstudio.com/web/packages/CodeDepends/index.html"><code>CodeDepends</code></a> package.</p>
+<p>We do package requirements analysis (i.e. work out what packages your code requires) within <a href="https://github.com/stencila/dockta"><code>dockta</code></a> so that we can build Docker images for a project. We do this by detecting package import statements. We wanted to keep that code within Javascript, rather that having to rely on being able to spawn a R or Python session just to determine which packages are needed by some code. For R and Python we do that using regular expressions (<a href="https://github.com/stencila/dockta/blob/138d7c189eef7b0c12edcc8e7c227d427e29ac1f/src/PythonParser.ts#L356">e.g. for Python</a>). For Javascript, we use the <a href="https://github.com/browserify/detective"><code>detective</code></a> package which parses the entire source code to find <code>require()</code> calls.</p>
+<h2 id="trees-from-blobs">Trees from blobs</h2>
+<p>Instead of doing these different forms of semantic analysis using different methods (i.e. regexes v parsing and AST walking) within different environments (i.e. within R v within Python v within Javascript) we are planning to consolidate this functionality within <a href="https://github.com/stencila/encoda">Encoda</a>. It&apos;s a natural fit for Encoda because that&apos;s the place where we handle the parsing of &quot;blobs&quot; of content (e.g. a binary blob of a <code>.docx</code>, or a text blob of Markdown) into a tree of structured, semantic, document nodes. Our plan is to treat source code in the same way as these other formats taking blobs of source code (e.g a Python script, or a R code cell) and parsing into a tree of nodes that can that be analysed for different purposes (e.g. package requirements analysis or cell dependency analysis).</p>
+<p><img src="./wanaka-tree.jpg" alt></p>
+<p><em>The &quot;Lake Tree&quot;, Wanaka, NZ. <a href="https://www.flickr.com/photos/volvob12b/24202789152">Bernard Spragg</a>, CC0 1.0 Universal.</em></p>
+<h2 id="github&apos;s-semantic-library">Github&apos;s Semantic Library</h2>
+<p>Given that, last week I was interested to see Github <a href="https://github.blog/changelog/2019-06-11-jump-to-definition-in-public-repositories/">introduce a &quot;jump-to-definition&quot;</a> feature. Under the hood, that feature uses Github&apos;s own Haskell library for semantic code analysis, <a href="https://github.com/github/semantic">Semantic</a>.</p>
+<p>As the <a href="https://github.com/github/semantic#technology-and-architecture">README</a> says, Semantic basically:</p>
+<ol>
+<li>Reads blobs [of raw source code].</li>
+<li>Generates parse trees for those blobs with <code>tree-sitter</code> (an incremental parsing system for programming tools).</li>
+<li>Assigns those trees into a generalized representation of syntax.</li>
+<li>Performs analysis, computes diffs, or just returns parse trees.</li>
+<li>Renders output in one of many supported formats.</li>
+</ol>
+<p>The part of that I was most excited about was &quot;generalized representation of syntax&quot;. It would be great if we had a program that we could leverage in Encoda  for semantic analysis of source code, in the same way that we use Pandoc for text documents. I had previously looked at <a href="https://docs.sourced.tech/babelfish/">Babelfish</a> and its Universal Abstract Syntax Tree (UAST) for this but hadn&apos;t yet experimented with it.</p>
+<h2 id="test-driving-semantic">Test driving Semantic</h2>
+<p>I was interested to see what the tree generated by Semantic looked like. Specifically, how it parsed <code>import</code> statements and whether it was a viable solution to replace the current regex based approach we use in Dockta. So, I took it for a test drive...</p>
+<p>After a brief, failed, attempt at building locally (on Ubuntu 16.04), I opted to build Semantic&apos;s Docker image instead:</p>
+<pre><code class="language-bash">git clone git@github.com:github/semantic
+cd semantic
+docker build --tag semantic .
+</code></pre>
+<p>You can then run it against some test files using Docker&apos;s <code>run</code> command:</p>
+<pre><code class="language-bash">docker run -v $(pwd):/work semantic parse /work/test.py
+</code></pre>
+<p>Let&apos;s unpack that command a little:</p>
+<ul>
+<li>the <code>-v $(pwd):/work</code> option mounts the current working directory into the container at <code>/work</code> (it&apos;s a useful way for easily running a containerized executable on local files without having to put them into the container)</li>
+<li>the <code>semantic parse --json /work/test.py</code> part is where we tell Semantic to parse <code>test.py</code> and output JSON</li>
+</ul>
+<p>Currently, Semantic supports Ruby, JavaScript, TypeScript, Python, Go, PHP, Java, JSON, JSX, Haskell and Markdown. I created three test files for Python, JavaScript and Go which have similar import statement semantics.</p>
+<p><strong>test.py</strong></p>
+<pre><code class="language-python">import mod
+from mod import a as b
+</code></pre>
+<p><strong>test.js</strong></p>
+<pre><code class="language-javascript">import mod from &apos;mod&apos;
+import {a as b} from &apos;mod&apos;
+</code></pre>
+<p><strong>test.go</strong></p>
+<pre><code class="language-javascript">import &quot;mod&quot;
+import alias &quot;mod&quot;
+</code></pre>
+<p>And then parsed each of these files into S-expressions to examine the basic structure of the generated tree:</p>
+<pre><code class="language-bash">&gt; docker run -v $(pwd):/work semantic parse /work/test.js
+(Statements
+ (Import)
+ (Import))
+</code></pre>
+<pre><code class="language-bash">&gt; docker run -v $(pwd):/work semantic parse /work/test.py
+(Statements
+  (QualifiedImport
+    (Identifier))
+  (Import
+    (Alias
+      (Identifier)
+      (Identifier))))
+</code></pre>
+<pre><code class="language-bash">docker run -v (pwd):/work semantic parse /work/test.go
+(Statements
+  (QualifiedImport
+    (Identifier))
+  (QualifiedImport
+    (Identifier)))
+</code></pre>
+<p>I was hoping Semantic would return a relatively simple tree using its &quot;generalized representation of syntax&quot; and that the trees would be similar across languages. Instead, I was surprised at how much variation there was in node types in each of the trees.</p>
+<p>To further look into these trees, I generated JSON using the <code>--json</code> flag. If we were to use Semantic in Encoda, this would be our primary interface between the two. The results (below) confirm the diversity of node types. We could write code to normalize these trees but that seems to defeat the purpose of using Semantic.</p>
+<p>We&apos;ll definitely keep an eye on Semantic, but in the short term, at least for doing package requirements analysis, despite their potential problems, we&apos;ll probably stick to using regexes.</p>
+<h2 id="appendix">Appendix</h2>
+<p>For brevity, the JSON outputs below don&apos;t include <code>sourceRange</code> and <code>sourceSpan</code> properties that provide information on the location of a node in the source file.</p>
+<p><strong>JSON output from parsing <code>test.py</code></strong></p>
+<pre><code class="language-json">{
+  &quot;trees&quot;: [
+    {
+      &quot;path&quot;: &quot;/work/test.py&quot;,
+      &quot;language&quot;: &quot;Python&quot;,
+      &quot;tree&quot;: {
+        &quot;term&quot;: &quot;Statements&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;term&quot;: &quot;QualifiedImport&quot;,
+            &quot;qualifiedImportFrom&quot;: [
+              {
+                &quot;term&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;mod&quot;
+              }
+            ]
+          },
+          {
+            &quot;term&quot;: &quot;Import&quot;,
+            &quot;importFrom&quot;: {
+              &quot;tag&quot;: &quot;QualifiedName&quot;,
+              &quot;paths&quot;: [
+                &quot;mod&quot;
+              ]
+            },
+            &quot;importSymbols&quot;: [
+              {
+                &quot;term&quot;: &quot;Alias&quot;,
+                &quot;aliasName&quot;: {
+                  &quot;term&quot;: &quot;Identifier&quot;,
+                  &quot;name&quot;: &quot;b&quot;
+                },
+                &quot;aliasValue&quot;: {
+                  &quot;term&quot;: &quot;Identifier&quot;,
+                  &quot;name&quot;: &quot;a&quot;
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+</code></pre>
+<p><strong>JSON output from parsing <code>test.js</code></strong></p>
+<pre><code class="language-json">{
+  &quot;trees&quot;: [
+    {
+      &quot;path&quot;: &quot;/work/test.js&quot;,
+      &quot;language&quot;: &quot;JavaScript&quot;,
+      &quot;tree&quot;: {
+        &quot;term&quot;: &quot;Statements&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;term&quot;: &quot;Import&quot;,
+            &quot;importFrom&quot;: {
+              &quot;pathIsRelative&quot;: &quot;NonRelative&quot;,
+              &quot;unPath&quot;: &quot;mod&quot;
+            },
+            &quot;importSymbols&quot;: [
+              {
+                &quot;aliasName&quot;: &quot;mod&quot;,
+                &quot;aliasValue&quot;: &quot;mod&quot;
+              }
+            ]
+          },
+          {
+            &quot;term&quot;: &quot;Import&quot;,
+            &quot;importFrom&quot;: {
+              &quot;pathIsRelative&quot;: &quot;NonRelative&quot;,
+              &quot;unPath&quot;: &quot;mod&quot;
+            },
+            &quot;importSymbols&quot;: [
+              {
+                &quot;aliasName&quot;: &quot;b&quot;,
+                &quot;aliasValue&quot;: &quot;a&quot;
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+</code></pre>
+</div>
+                </article>
+                
+                <div id="discourse-comments"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/blog/2019-06-17-blobs-to-trees/index.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-markdown.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+<script type="text/javascript">
+    DiscourseEmbed = {
+        discourseUrl: 'https://community.stenci.la/',
+        discourseEmbedUrl: window.location.href,
+        { %
+            if front.forum_topic %
+        }
+        topicId: {
+            {
+                front.forum_topic
+            }
+        } { % endif %
+        }
+    };
+    (function() {
+        var d = document.createElement('script');
+        d.type = 'text/javascript';
+        d.async = true;
+        d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+    })();
+</script>
+
+    
+
+</body></html>

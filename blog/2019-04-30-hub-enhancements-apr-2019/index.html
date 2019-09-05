@@ -1,0 +1,178 @@
+<!DOCTYPE html><html><head>
+        <title>Stencila Hub Enhancements for April 2019 : Stencila</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+<link rel="stylesheet" href="/css/prism.css">
+
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+<main class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-8 posts">
+                <article>
+                    <header class="heading">
+                        <p class="has-text-primary small">Ben Shaw, 30 April 2019</p>
+                        <h1 class="title has-line has-text-primary is-1">Stencila Hub Enhancements for April 2019</h1>
+                    </header>
+                    <div class="content post-article-content"><p>Stencila Hub is the web application that allows users to easily use Stencila&apos;s tools for executable documents without having to install them on their own machine. In addition, the Hub allows users to manage projects, accounts, teams, execution sessions and remote code and data sources. Since February we have mostly been working on invisible changes to improve reliability, but there have also been a few small but important style updates.</p>
+<h2 id="style-updates">Style Updates</h2>
+<p>Stencila&apos;s new Product Designer, Jacqueline, joined us in March, and quickly got to work on Stencila Hub. Her first task was to review and begin standardising some of its look and feel. Here&apos;s a quick before and after of the Projects List screen.</p>
+<p><img src="before-after.gif" alt="Before after Projects List"></p>
+<p>You will have noticed other improvements to the consitency of buttons and general UX. There are more changes to come as we redesign some of the interface to support upcoming features, and we will announce them as they are released. But you will also see consistent incremental improvements to the UI until then.</p>
+<h2 id="session-queueing">Session Queueing</h2>
+<p>When launching a Stencila Desktop session through Stencila Hub, there is a chance that an execution host is not ready and has to be started. This might take a couple of minutes &#x2013; although we have work in the pipeline to reduce startup time in the future. While session queueing is not new to Stencila Hub, we have made a number of improvements to the reliability.</p>
+<p><img src="waiting-spinner.png" alt="Waiting for session"></p>
+<p>The above spinner is probably something you have seen before when launching Stencila Desktop. It might take a minute or two to get a session but with the improvements we have done there shouldn&apos;t be any timeouts or errors &#x2013; it will launch eventually.</p>
+<h2 id="deployment">Deployment</h2>
+<p>As well as the improvements to the deployment process (explained in the <a href="/blog/2019-04-17-consistent-versioning-deployment-django-express/">New Deployment Process blog post</a>) there have also been a few Hub specific changes. The load balancer uses the <code>system-status</code> endpoint to check if a deployment instance is ready to receive connections. It now returns an error if there are unapplied Django migrations. This means that connections will continue to be served by an existing instance until the database is in sync with the application code. Once the migration occurs requests will automatically be sent to the new instance.</p>
+<p>We&apos;ve also updated the Kubernetes deployment script to use rolling updates. We can now roll out updates and because the load balancer and Kubernetes checks the <code>system-status</code> endpoint, it waits until the new deployment is ready before switching over. Once it&apos;s ready the switch is instantaneous so we can deploy Hub (or Stencila Cloud) with no downtime.</p>
+<h2 id="internet-explorer-deprecation">Internet Explorer Deprecation</h2>
+<p>Due to the use of some advanced JavaScript features, Stencila Hub has never really supported Internet Explorer. In the past, there was no notification of this to Internet Explorer users. Now, Internet Explorer users get their own special screen to let them know they are on an unsupported browser, instead of things just failing for no reason.</p>
+<p>Our roadmap includes a fully enumerated list of supported browsers and we may later down-compile ES2015+ to JavaScript using Babel (or similar) to add Internet Explorer support, but there are no concrete plans surrounding that yet.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Thank you for reading about our latest changes to Stencila Hub. We have more updates in the works focusing on UI enhancements and integration with more third party services.</p>
+<p>If you like staying up to date with Stencila&apos;s progress you can join our monthly <a href="https://meet.google.com/tpe-pgxz-oao">Catching up with Stencila</a> Google Meetup. They take place 8-9PM UTC on the first Monday of every month, the next one is scheduled for the 6th of May. We will be discussing both Hub and our other projects. We hope to see you there!</p>
+</div>
+                </article>
+                
+                <div id="discourse-comments"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/blog/2019-04-30-hub-enhancements-apr-2019/index.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+
+<script type="text/javascript" src="/js/prism.js"></script>
+<script type="text/javascript" src="/js/prism-bash.min.js"></script>
+<script type="text/javascript" src="/js/prism-json.min.js"></script>
+<script type="text/javascript" src="/js/prism-markdown.min.js"></script>
+<script type="text/javascript" src="/js/prism-mini.js"></script>
+<script type="text/javascript" src="/js/prism-python.min.js"></script>
+<script type="text/javascript" src="/js/prism-r.min.js"></script>
+<script type="text/javascript" src="/js/prism-sql.min.js"></script>
+
+<script type="text/javascript">
+    DiscourseEmbed = {
+        discourseUrl: 'https://community.stenci.la/',
+        discourseEmbedUrl: window.location.href,
+        { %
+            if front.forum_topic %
+        }
+        topicId: {
+            {
+                front.forum_topic
+            }
+        } { % endif %
+        }
+    };
+    (function() {
+        var d = document.createElement('script');
+        d.type = 'text/javascript';
+        d.async = true;
+        d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+    })();
+</script>
+
+    
+
+</body></html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html><html><head>
+        <title>Stencila</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/img/favicon.png">
+        
+        <link rel="stylesheet" href="/css/stencila-website.css">
+        <link rel="stylesheet" href="/css/fontawesome-all.min.css">
+        
+    </head>
+
+    <body class="has-navbar-fixed-top has-navbar-fixed-top-touch" id="body">
+        <header class="header">
+    <nav class="navbar is-fixed-top border-bottom-light" role="navigation" aria-label="main navigation" id="main-navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item navbar-logo" href="/"><img src="/img/stencila-logo.svg" width="140" alt="Stencila"></a>
+                <div class="navbar-burger">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start flex-grow-contents flex-end">
+                    <!-- <a class="navbar-item" href="/use">Use</a> -->
+                    <a class="navbar-item" href="/learn/intro.html">Learn</a>
+                    <a class="navbar-item" href="/contribute">Contribute</a>
+                    <a class="navbar-item" href="/community">Community</a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-primary is-rounded" href="/#beta-signup">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+        
+        <main class="main section">
+            <div class="container">
+                <div class="content">
+                    <h1 id="data">Data</h1>
+<p>At the heart of computation in Stencila are data <em>values</em> of different <em>types</em>. Data values are passed to, and returned from, function calls. Some functions are strongly typed, meaning that they will only accept data values of a particular type. This section introduces the various data types in Stencila.</p>
+<h2 id="data-types">Data types</h2>
+<p>There are several fundamental data types built-in to, and used internally within, Stencila. These fundamental types are the same as in <a href="https://www.json.org/">JSON</a>, a commonly used, lightweight, data-interchange format. In this section, we use JSON to represent values of each fundamental data type. But as is shown later, these values may have alternative representations in different languages (e.g. Mini, R).</p>
+<h3 id="fundamental-data-types">Fundamental data types</h3>
+<p>There are two categories of fundamental types: <em>atomics</em>, and <em>compounds</em>. The <em>atomic</em> value types are the smallest kind of value, they can not be broken into smaller parts. There are four atomic types: <code>boolean</code>, <code>number</code>, <code>integer</code>, and <code>string</code>. There are two <em>compound</em> fundamental types, <code>array</code> and <code>object</code>, that consist of combinations of atomic types.</p>
+<h4 id="null">Null</h4>
+<p>A <code>null</code> value is used to represent missing or empty data values:</p>
+<pre><code class="language-json">null
+</code></pre>
+<h4 id="boolean">Boolean</h4>
+<p>A <code>boolean</code> can only have one of two values:</p>
+<pre><code class="language-json">true
+</code></pre>
+<p>or</p>
+<pre><code class="language-json">false
+</code></pre>
+<h4 id="number">Number</h4>
+<p>The <code>number</code> type represents <a href="https://en.wikipedia.org/wiki/Real_number">real numbers</a> e.g.</p>
+<pre><code class="language-json">3.14159265358979323846264338327950288419716
+</code></pre>
+<h4 id="integer">Integer</h4>
+<p>The <code>integer</code> type represents <a href="https://en.wikipedia.org/wiki/Integer">integers</a> e.g.</p>
+<pre><code class="language-json">42
+</code></pre>
+<p>The <code>integer</code> type is a child type of <code>number</code>, so any function having a <code>number</code> as a parameter can also take an <code>integer</code>.</p>
+<h4 id="string">String</h4>
+<p>Strings are sequences of characters. e.g.</p>
+<pre><code class="language-json">&quot;hello world&quot;
+</code></pre>
+<h4 id="array">Array</h4>
+<p>An <code>array</code> is an ordered collection of values e.g.</p>
+<pre><code class="language-json">[1, 2, 3]
+</code></pre>
+<p>This example value is of type <code>array[integer]</code> because the values in the array are all of the same type <code>integer</code>.</p>
+<p>The values in an array can have different types e.g.</p>
+<pre><code class="language-json">[&apos;hello world&apos;, [1, 2], {}]
+</code></pre>
+<p>This example value is of type <code>array</code>, a synonym for <code>array[any]</code>.</p>
+<h4 id="object">Object</h4>
+<p>An <code>object</code> is a collection of values in which each value has a <em>name</em> e.g.</p>
+<pre><code class="language-json">{&quot;height&quot;: 1.1, &quot;width&quot;: 4.5}
+</code></pre>
+<p>This <code>object</code> has two <em>properties</em>: <code>height</code> and <code>width</code>.</p>
+<h3 id="extended-data-types">Extended data types</h3>
+<p>Extended types are child types of <code>object</code> with a <code>string</code> property with the name <code>type</code>. For example, an extended type representing a position on the earths surface could be written as:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;position&quot;,
+  &quot;latitude&quot;: -42.4,
+  &quot;longitude&quot;: 173.7
+}
+</code></pre>
+<p>The <code>table</code> type is a commonly used extended type for tabular data which is similar to a <code>data.frame</code> in R. It stores values in columns:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;table&quot;,
+  &quot;data&quot;: {
+    &quot;height&quot;: [1.1, 1.0, 1.3],
+    &quot;width&quot;: [4.3, 3.9, 3.7]
+  }
+}
+</code></pre>
+<h2 id="data-packets">Data packets</h2>
+<p>Stencila provides a mechanism for data to be exchanged between documents and execution contexts and among execution contexts. When passing data to/from execution <code>Contexts</code>, values are marshaled into a data <em>package</em> which specify the type and value of the data. For example, an array of integers is exchanged in a data packet like this:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;array[integer]&quot;,
+  &quot;data&quot;: [1, 2, 3]
+}
+</code></pre>
+<p>Note that for extended data types, such as a <code>table</code> the data packet, somewhat confusingly, has nested structure:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;table&quot;,
+  &quot;data&quot;: {
+    &quot;type&quot;: &quot;table&quot;,
+    &quot;data&quot;: {
+      &quot;height&quot;: [1.1, 1.0, 1.3],
+      &quot;width&quot;: [4.3, 3.9, 3.7]
+    }
+  }
+}
+</code></pre>
+<p>The data packets are converted by each execution <code>Context</code> into a native data type. For example, when a <code>table</code> value is passed to a <code>RContext</code> it is converted to a <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/data.frame.html"><code>data.frame</code></a>, and when it is passed to a <code>PythonContext</code> it is converted to a <a href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html"><code>pandas.DataFrame</code></a>. For more details on the protocols for translating Stencila data types to native data types, see the tables in each language section.</p>
+<h2 id="data-pointers">Data pointers</h2>
+<blockquote>
+<p>&#x2728; Data pointers are yet to be implemented.</p>
+</blockquote>
+<p>Exchanging data using data packets is fine for small data, but it quickly becomes inefficient for large data values such as a large R data frame or a database table. That&apos;s because the data packet gets passed, in it entirety, from the execution context to the client user interface and then back to the same execution context or onwards to another execution context.</p>
+<p>This is where data <em>pointers</em> come in. Instead of encapsulating the entire data value, a data pointer just stores information on where the data resides.</p>
+<p>For example, let&apos;s say that you were using the Star Wars example database, and had a SQL cell in a document with the code,</p>
+<pre><code class="language-sql">low_gravity_planets = SELECT * FROM planets WHERE gravity &lt;= 1
+</code></pre>
+<p>This would create a temporary table in the database called <code>low_gravity_planets</code>, and instead of returning the cell value as a data packet with all the data would return the cell value as a data pointer:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;table&quot;,
+  &quot;context&quot;: &quot;http://127.0.0.1:2010/sqlContext1&quot;
+  &quot;name&quot;: &quot;low_gravity_planets&quot;
+}
+</code></pre>
+<p>From this information, the Stencila user interface, and other execution contexts, can access the actual data value only when they need to by calling the <code>fetch</code> method of the execution context (e.g <code>PUT http://127.0.0.1:2010/sqlContext1!fetch</code> with <code>{&quot;name&quot;: &quot;low_gravity_planets&quot;, &quot;firstRow&quot;: 0, &quot;lastRow&quot;: 100}</code> as the request body).</p>
+<p>Data pointers allow Stencila&apos;s execution <code>Engine</code> to perform dependency analysis, and update cells when their dependencies change, without wasteful and slow data transfer. Documents will often use a single language and a single execution context. For example, consider a document with two R cells, one which creates a large data frame called <code>data</code></p>
+<pre><code class="language-r">data &lt;- data.frame(x=1:100000, y=rnorm(100000))
+</code></pre>
+<p>an one which plots that data frame:</p>
+<pre><code class="language-r">plot(data)
+</code></pre>
+<p>If the <code>RContext</code> always returned the value of <code>data</code> as a data packet, the entire ten thousand rows of <code>data</code> would be transferred from the context, to the client and then back again to the context. But with data pointers, when executing the second cell, the R context is able to recognize from the <code>context</code> property of the pointer that <code>data</code> resides within itself and therefore no data transfer is necessary.</p>
+<p>It is left to implementation of the execution context to decide when to return a data value as a data packet or a data pointer. Generally execution context&apos;s will return data packets for small data values e.g. an <code>integer</code> or a short <code>array[string]</code> and a data pointer for larger data e.g. a 100000 row table.</p>
+
+                </div>
+            </div>
+        </main>
+        
+        <footer class="footer">
+    <div class="container">
+        <div class="columns footer-links is-centered">
+            <div class="column is-2">
+                <h4 class="title"> Tools </h4>
+                <!-- <a href="/use">Use </a> <br /> -->
+                <a href="/learn/intro.html"> Learn </a> <br>
+                <a href="/learn/faq.html"> FAQ </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Community </h4>
+                <a href="/contribute"> Contribute </a> <br>
+                <a href="/community/beta-testing.html"> Beta Testing </a> <br>
+                <a href="/community/resources.html"> Resources </a> <br>
+                <a href="/blog"> Blog </a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> About </h4>
+                <a href="/about/team.html">Team</a> <br>
+                <a href="/about/advisory-board.html">Advisors</a> <br>
+                <a href="/about/jobs">Jobs</a> <br>
+            </div>
+            <div class="column is-2">
+                <h4 class="title"> Contact </h4>
+                <a href="mailto:hello@stenci.la">Email </a> <br>
+                <a href="https://twitter.com/stencila"> Twitter </a> <br>
+                <a href="https://stencila.zulipchat.com/#narrow/stream/202396-community"> Zulip Chat </a> <br>
+                <a href="https://community.stenci.la/"> Community Forum </a> <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-colophon">
+        <div class="container">
+            <div class="columns align-centre">
+                <img src="/img/stencila-icon-reverse.svg" width="36" alt="Stencila" class="footer-logo">
+                <div class="column footer-copyright no-flex-grow has-nowrap">
+                    &#xA9; 2018-2019 Stencila <a href="https://github.com/stencila/website#contributors">contributors</a>
+                </div>
+                <div class="footer-social column flex-grow has-text-centered">
+                    <a href="https://github.com/stencila" target="_blank" class="fab fa-github"></a>
+                    <a href="https://gitter.im/stencila/stencila" target="_blank" class="fab fa-gitter"></a>
+                    <a href="https://twitter.com/stencila" target="_blank" class="fab fa-twitter"></a>
+                </div>
+                <div class="column is-2 footer-buttons">
+                    <a id="edit-page" class="button is-mini is-outlined is-white is-rounded call-to-action is-full-width" href="https://github.com/stencila/website/edit/master/src/learn/computation/data-2.md" target="_blank" title="Edit this page">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+        <script type="text/javascript" src="/js/noframework.waypoints.js"></script>
+        <script type="text/javascript" src="/js/stencila-website.js"></script>
+        <script type="text/javascript" src="/js/beta-signup.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/reqwest@2.0.5/src/reqwest.js"></script>
+        
+    
+
+</body></html>
